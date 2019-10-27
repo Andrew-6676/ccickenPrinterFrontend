@@ -1,0 +1,152 @@
+<div class="status">
+	<h3>Режим взвешивания</h3>
+	<br>
+	- Ожидаем подключения весов
+</div>
+
+<div class="plu">
+	PLU: {{ currentPlu }}
+</div>
+
+<nav class="menu">
+	<ul>
+		<li><a routerLink="/production/list">Продукция</a></li>
+		<li><a routerLink="/users">Пользователи</a></li>
+	</ul>
+</nav>
+<hr>
+
+<div class="keyboard">
+	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('1')">1</button>
+	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('2')">2</button>
+	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('3')">3</button>
+	<button mat-raised-button class="weiging-btn srv-btn">PLU</button>
+	<button mat-raised-button class="weiging-btn srv-btn">
+		<fa-icon [icon]="faIcons.tare"></fa-icon>
+		Тара
+	</button>
+
+	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('4')">4</button>
+	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('5')">5</button>
+	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('6')">6</button>
+	<button mat-raised-button class="weiging-btn srv-btn" (click)="getUser()" color="{{ user ? '' : 'warn' }}">
+		<fa-icon [icon]="faIcons.user"></fa-icon>
+		Пользователь<br>
+		<span class="user_name">{{ user?.name }}</span>
+	</button>
+	<button mat-raised-button class="weiging-btn srv-btn">
+		<fa-icon [icon]="faIcons.tareReset"></fa-icon>
+		Сброс тары
+	</button>
+
+	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('7')">7</button>
+	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('8')">8</button>
+	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('9')">9</button>
+	<button mat-raised-button class="weiging-btn srv-btn">
+		<fa-icon [icon]="faIcons.weight"></fa-icon>
+		Взвешивание
+	</button>
+	<button mat-raised-button class="weiging-btn srv-bt invisible"></button>
+
+	<button mat-raised-button class="weiging-btn red-btn" (click)="NumPress('reset')">
+		<fa-icon [icon]="faIcons.reset"></fa-icon>
+		Сброс
+	</button>
+	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('0')">0</button>
+	<button mat-raised-button class="weiging-btn orange-btn" (click)="NumPress('del')">
+		<fa-icon [icon]="faIcons.delete"></fa-icon>
+		Удалить
+	</button>
+	<button mat-raised-button class="weiging-btn srv-btn">
+		<fa-icon [icon]="faIcons.total"></fa-icon>
+		Итог
+	</button>
+	<button mat-raised-button class="weiging-btn srv-btn">
+		<fa-icon [icon]="faIcons.print"></fa-icon>
+		Печать <br>
+		итога по поддону
+	</button>
+
+</div>
+
+<!-- ---------------------------------------------------------------------- -->
+<hr>
+<div class="footer">
+	<mat-form-field class="full-width">
+		<mat-label>Продукт</mat-label>
+			<mat-select placeholder="Выберите продукт">
+				<mat-option value="1">курица</mat-option>
+				<mat-option value="1">Цыплёнок</mat-option>
+				<mat-option value="1">Петух</mat-option>
+				<mat-option value="1">Гусь</mat-option>
+			</mat-select>
+	</mat-form-field>
+
+	<div class="inputs">
+		<div class="left">
+			<button mat-fab color="primary" (click)="changeDate(partyDate, -1)">-</button>
+			&nbsp;
+			<mat-form-field>
+				<input matInput [matDatepicker]="picker" (click)="picker.open()" placeholder="Дата партии" [formControl]="partyDate">
+				<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+				<mat-datepicker #picker touchUi></mat-datepicker>
+			</mat-form-field>
+			&nbsp;
+			<button mat-fab color="primary" (click)="changeDate(partyDate, 1)">+</button>
+			<br>
+			<button mat-fab color="primary" (click)="palletNumber = palletNumber-1;">-</button>
+			&nbsp;
+			<mat-form-field>
+				<input matInput
+					   placeholder="Номер поддона"
+					   [(ngModel)]="palletNumber"
+					   type="number">
+			</mat-form-field>
+			&nbsp;
+			<button mat-fab color="primary" (click)="palletNumber = palletNumber+1;">+</button>
+		</div>
+
+		<div class="right">
+			<button mat-fab color="primary" (click)="changeDate(expirationDate, -1)">-</button>
+			&nbsp;
+			<mat-form-field>
+				<input matInput [matDatepicker]="picker2" (click)="picker2.open()" placeholder="Годен до" [formControl]="expirationDate">
+				<mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+				<mat-datepicker #picker2 touchUi></mat-datepicker>
+			</mat-form-field>
+			&nbsp;
+			<button mat-fab color="primary" (click)="changeDate(expirationDate, 1)">+</button>
+			<br>
+			<button mat-fab color="primary" (click)="packsPerBox = packsPerBox - 1">-</button>
+			&nbsp;
+			<mat-form-field>
+				<input matInput
+					   placeholder="Упаковок в коробке"
+					   [(ngModel)]="packsPerBox"
+					   type="number">
+			</mat-form-field>
+			&nbsp;
+			<button mat-fab color="primary" (click)="packsPerBox = packsPerBox + 1">+</button>
+
+		</div>
+	</div>
+	<hr>
+
+	<table class="table-totals">
+		<tr>
+			<th>Упаковок, шт</th>
+			<th>Вес продукции, кг</th>
+			<th>Вес тары, кг</th>
+			<th>Вес партии, кг</th>
+		</tr>
+		<tr>
+			<td>{{ totals.packs }}</td>
+			<td>{{ totals.netto }}</td>
+			<td>{{ totals.tare }}</td>
+			<td>{{ totals.brutto }}</td>
+		</tr>
+	</table>
+
+
+
+</div>

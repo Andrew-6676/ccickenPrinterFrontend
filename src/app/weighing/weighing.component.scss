@@ -1,0 +1,86 @@
+.status {
+  height:10%;
+}
+.plu {
+  border: 1px solid #bcbcbc;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 20px;
+  font-size: 32px;
+}
+.menu {
+  position: absolute;
+  font-size: 0.7em;
+  right: 0;
+  top: 90px;
+  text-align: right;
+}
+.menu ul {
+  list-style: none;
+}
+.keyboard {
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 10px;
+  height: 45%;
+}
+.footer {
+  height: 30%;
+  background: #fff;
+  padding: 0 20px;
+  border-radius: 5px;
+}
+
+
+.weiging-btn {
+
+}
+.weiging-btn fa-icon {
+  font-size: 2em;
+  margin-right: 5px;
+}
+.num-btn {
+  font-size: 2em;
+  font-weight: bold;
+  color: #0077ff;
+}
+.red-btn {
+  color: red;
+}
+.orange-btn {
+  color: orange;
+}
+.srv-btn {
+  color: green;
+}
+.invisible {
+  visibility: hidden;
+}
+.srv-btn .user_name {
+  font-size: 0.8em;
+  color: #bcbcbc;
+  font-weight: normal;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.inputs {
+  display: flex;
+  justify-content: space-around;
+}
+.inputs mat-form-field {
+  width: 25vw;
+}
+
+.right {
+  text-align: right;
+}
+
+.table-totals {
+  width: 100%;
+  text-align: center;
+}
