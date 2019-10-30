@@ -1,1 +1,45 @@
-<p>prod-list works!</p>
+<mat-card>
+	<mat-card-title>
+		<button mat-raised-button color="primary" (click)="print()">
+			<fa-icon [icon]="faIcons.print"></fa-icon>
+			&nbsp;
+			Печать
+		</button>
+		&nbsp;
+		<button mat-raised-button color="primary" (click)="refresh(true)">
+			<fa-icon [icon]="faIcons.refresh"></fa-icon>
+			&nbsp;
+			Обновить
+		</button>
+	</mat-card-title>
+	<table class="table-prod">
+		<caption>Продукция</caption>
+		<thead>
+			<tr>
+				<th>Код</th>
+				<th>Наименование</th>
+				<th>Название</th>
+				<th>Срок годности</th>
+				<th>Штрихкод</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let row of production">
+				<td>{{ row.id }}</td>
+				<td>{{ row.group_name }}</td>
+				<td>{{ row.name }}</td>
+				<td>{{ row.expiration_date }}</td>
+				<td>{{ row.bar_code }}</td>
+				<td>
+					<a mat-mini-fab color="primary" [routerLink]="['/production/edit', row]">
+						<fa-icon [icon]="faIcons.edit"></fa-icon>
+					</a>
+					<button mat-mini-fab color="accent" (click)="del(row)">
+						<fa-icon [icon]="faIcons.del"></fa-icon>
+					</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</mat-card>

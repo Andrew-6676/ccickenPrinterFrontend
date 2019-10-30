@@ -2,12 +2,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule }                from '@angular/core';
 import { FontAwesomeModule }       from '@fortawesome/angular-fontawesome';
 import {
-	MatButtonModule,
+	MatButtonModule, MatCardModule, MatChipsModule,
 	MatDatepickerModule,
 	MatInputModule,
 	MatNativeDateModule,
 	MatSelectModule
-}                                  from '@angular/material';
+} from '@angular/material';
 import { HttpClientModule }        from '@angular/common/http';
 import { BrowserModule }           from '@angular/platform-browser';
 
@@ -46,7 +46,9 @@ import { FormsModule, ReactiveFormsModule }             from '@angular/forms';
 		MatInputModule,
 		MatButtonModule,
 		FormsModule,
-		ReactiveFormsModule
+		ReactiveFormsModule,
+		MatCardModule,
+		MatChipsModule
 	],
 	providers: [
 		ProductionService,

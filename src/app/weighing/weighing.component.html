@@ -1,7 +1,10 @@
 <div class="status">
-	<h3>Режим взвешивания</h3>
 	<br>
-	- Ожидаем подключения весов
+	<mat-chip-list>
+		<mat-chip color="accent" selected>Ожидаем подключения весов</mat-chip>
+	</mat-chip-list>
+	<br>
+	Выбранный продукт - {{ currentproduct?.name }}
 </div>
 
 <div class="plu">
@@ -20,7 +23,7 @@
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('1')">1</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('2')">2</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('3')">3</button>
-	<button mat-raised-button class="weiging-btn srv-btn">PLU</button>
+	<button mat-raised-button class="weiging-btn srv-btn" (click)="getProduct()">PLU</button>
 	<button mat-raised-button class="weiging-btn srv-btn">
 		<fa-icon [icon]="faIcons.tare"></fa-icon>
 		Тара
@@ -74,11 +77,8 @@
 <div class="footer">
 	<mat-form-field class="full-width">
 		<mat-label>Продукт</mat-label>
-			<mat-select placeholder="Выберите продукт">
-				<mat-option value="1">курица</mat-option>
-				<mat-option value="1">Цыплёнок</mat-option>
-				<mat-option value="1">Петух</mat-option>
-				<mat-option value="1">Гусь</mat-option>
+			<mat-select placeholder="Выберите продукт" [(value)]="currentproductId" (selectionChange)="prodSelect($event)">
+				<mat-option *ngFor="let p of production" [value]="p.id">[{{ p.id }}] - {{ p.name }}</mat-option>
 			</mat-select>
 	</mat-form-field>
 

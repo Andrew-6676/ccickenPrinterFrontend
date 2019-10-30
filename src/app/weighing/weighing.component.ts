@@ -11,10 +11,9 @@ import {
 }                                                   from '@fortawesome/free-solid-svg-icons';
 
 import { ProductionService } from '../services/production.service';
-import { Product }           from '../production/product.model';
 import { UserService }       from '../services/user.service';
-import { of }                from 'rxjs';
 import { FormControl }       from '@angular/forms';
+import { ProductionModel }   from '../production/production.model';
 
 @Component({
 	selector: 'app-weighing',
@@ -35,9 +34,10 @@ export class WeighingComponent implements OnInit {
 
 	production: any[] = [];
 	currentPlu = '';
-	currentproduct: Product = null;
+	currentproduct: ProductionModel = null;
+	currentproductId = -1;
 
-	usersList: any = [];
+	usersList: any[] = [];
 	user: string = null;
 
 	palletNumber = 1;
@@ -66,8 +66,8 @@ export class WeighingComponent implements OnInit {
 		this.productService
 			.getProduction()
 			.subscribe(
-				resp => {
-					this.production = [resp];
+				(resp: any[]) => {
+					this.production = resp;
 				}
 			);
 		this.userService
@@ -95,25 +95,27 @@ export class WeighingComponent implements OnInit {
 			default:
 				this.currentPlu += btn;
 		}
+	}
+
+	/* --------------------------------------------------------------------------- */
+	prodSelect(event: any) {
+		this.currentPlu = event.value;
 		this.getProduct();
 	}
 
 	/* --------------------------------------------------------------------------- */
-
 	getProduct() {
-		this.productService
-			.getProductByPLU(this.currentPlu)
-			.subscribe(
-				resp => {
-					if (resp) {
-						this.currentproduct = resp;
-					}
-				}
-			);
+		for (const p of this.production) {
+			if (p.id == this.currentPlu) {
+				this.currentproduct = p;
+				this.currentproductId = p.id;
+				return;
+			}
+		}
+		this.currentproduct = null;
+		this.currentproductId = -1;
 	}
-
 	/* --------------------------------------------------------------------------- */
-
 	getUser() {
 		const dialogRef = this.dialog.open(UserSelectDialogComponent, {
 			data: this.usersList

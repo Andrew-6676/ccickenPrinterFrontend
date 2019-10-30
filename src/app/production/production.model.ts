@@ -1,5 +1,5 @@
-export class Product {
-	id: string;
+export interface ProductionModel {
+	id: number;
 	group_name: string;
 	name: string;
 	descr: string;
@@ -10,7 +10,7 @@ export class Product {
 	RC_BY: string;
 	TU_BY: string;
 	STB: string;
-	expiration_date: string;
-	bar_code: string;
+	expiration_date: number;
+	bar_code: number;
 	deleted: number;
 }

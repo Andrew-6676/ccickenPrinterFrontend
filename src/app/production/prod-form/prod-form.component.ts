@@ -1,15 +1,20 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute }    from '@angular/router';
+import { ProductionModel }   from '../production.model';
 
 @Component({
-  selector: 'app-prod-form',
-  templateUrl: './prod-form.component.html',
-  styleUrls: ['./prod-form.component.scss']
+	selector: 'app-prod-form',
+	templateUrl: './prod-form.component.html',
+	styleUrls: ['./prod-form.component.scss']
 })
 export class ProdFormComponent implements OnInit {
+	prodItem: ProductionModel = null;
 
-  constructor() { }
+	constructor(private route: ActivatedRoute) {
+	}
 
-  ngOnInit() {
-  }
+	ngOnInit() {
+		this.prodItem = this.route.params.getValue();
+	}
 
 }
