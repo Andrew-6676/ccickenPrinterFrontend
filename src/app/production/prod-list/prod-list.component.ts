@@ -3,7 +3,7 @@ import { ProductionService } from '../../services/production.service';
 import { ProductionModel }   from '../production.model';
 import {
 	faEdit, faPrint, faSyncAlt,
-	faTrashAlt,
+	faTrashAlt, faWeight,
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -18,7 +18,8 @@ export class ProdListComponent implements OnInit {
 		edit: faEdit,
 		del: faTrashAlt,
 		print: faPrint,
-		refresh: faSyncAlt
+		refresh: faSyncAlt,
+		weight: faWeight,
 	};
 
 	constructor(public productService: ProductionService) {

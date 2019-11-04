@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute }    from '@angular/router';
-import { ProductionModel }   from '../production.model';
+import { Component, OnInit }                                                   from '@angular/core';
+import { ActivatedRoute }                                                      from '@angular/router';
+import { ProductionModel }                                                     from '../production.model';
+import { faSave, faTrashAlt, faUserEdit, faUserPlus, faWeight, faWindowClose } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
 	selector: 'app-prod-form',
@@ -9,12 +10,21 @@ import { ProductionModel }   from '../production.model';
 })
 export class ProdFormComponent implements OnInit {
 	prodItem: ProductionModel = null;
-
+	faIcons = {
+		add: faUserPlus,
+		save: faSave,
+		cancel: faWindowClose,
+		del: faTrashAlt,
+		edit: faUserEdit,
+	};
 	constructor(private route: ActivatedRoute) {
 	}
 
 	ngOnInit() {
-		this.prodItem = this.route.params.getValue();
+		// this.route.paramMap.subscribe(params => {
+		// 	this.prodItem = params.get('params');
+		// });
+		this.prodItem = this.route.snapshot.params as any;
 	}
 
 }

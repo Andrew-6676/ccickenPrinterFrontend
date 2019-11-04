@@ -38,7 +38,6 @@ export class WeighingComponent implements OnInit {
 	currentproductId = -1;
 
 	usersList: any[] = [];
-	user: string = null;
 
 	palletNumber = 1;
 	packsPerBox = 10;
@@ -125,7 +124,7 @@ export class WeighingComponent implements OnInit {
 		.subscribe(
 			result => {
 				console.log('The dialog was closed', result);
-				this.user = result;
+				this.userService.currentUser = result;
 			});
 	}
 }

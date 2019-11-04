@@ -32,10 +32,16 @@
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('4')">4</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('5')">5</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('6')">6</button>
-	<button mat-raised-button class="weiging-btn srv-btn" (click)="getUser()" color="{{ user ? '' : 'warn' }}">
-		<fa-icon [icon]="faIcons.user"></fa-icon>
-		Пользователь<br>
-		<span class="user_name">{{ user?.name }}</span>
+	<button mat-raised-button class="weiging-btn srv-btn" (click)="getUser()"
+			color="{{ userService.currentUser ? '' : 'warn' }}">
+		<span *ngIf="!userService.currentUser">
+			<fa-icon [icon]="faIcons.user"></fa-icon>
+			Пользователь
+		</span>
+		<span class="user_name" *ngIf="userService.currentUser">
+			<fa-icon [icon]="faIcons.user"></fa-icon>
+			{{ userService.currentUser?.name }}
+		</span>
 	</button>
 	<button mat-raised-button class="weiging-btn srv-btn">
 		<fa-icon [icon]="faIcons.tareReset"></fa-icon>

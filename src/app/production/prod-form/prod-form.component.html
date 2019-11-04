@@ -1,1 +1,26 @@
+<mat-card>
+	<mat-form-field class="example-full-width">
+		<input matInput placeholder="наименование" [(ngModel)]="prodItem.group_name">
+	</mat-form-field>
+	<br>
+	<mat-form-field class="example-full-width">
+		<input matInput placeholder="название" [(ngModel)]="prodItem.name">
+	</mat-form-field>
+	<br>
+	<mat-form-field class="example-full-width">
+		<textarea matInput placeholder="Состав продукта" [(ngModel)]="prodItem.ingridients"></textarea>
+	</mat-form-field>
+
+	<mat-card-actions>
+		<a mat-raised-button color="warn" [routerLink]="['/production/list']">
+			<fa-icon [icon]="faIcons.cancel"></fa-icon>
+			Отмена
+		</a>
+		<button mat-raised-button color="primary">
+			<fa-icon [icon]="faIcons.save"></fa-icon>
+			Сохранить
+		</button>
+	</mat-card-actions>
+</mat-card>
+
 <pre>{{ prodItem|json }}</pre>
