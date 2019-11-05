@@ -11,7 +11,15 @@
 			&nbsp;
 			Обновить
 		</button>
+		&nbsp;
+		<a mat-raised-button color="accent" [routerLink]="['/production/edit', -1]">
+			<fa-icon [icon]="faIcons.add"></fa-icon>
+			&nbsp;
+			Новый продукт
+		</a>
+
 		<span style="flex: 1"></span>
+
 		<a mat-stroked-button color="primary" [routerLink]="['/']">
 			<fa-icon [icon]="faIcons.weight"></fa-icon>
 			&nbsp;
@@ -38,7 +46,7 @@
 				<td>{{ row.expiration_date }}</td>
 				<td>{{ row.bar_code }}</td>
 				<td class="buttons">
-					<a mat-mini-fab color="primary" [routerLink]="['/production/edit', row]">
+					<a mat-mini-fab color="primary" [routerLink]="['/production/edit', row.id]">
 						<fa-icon [icon]="faIcons.edit"></fa-icon>
 					</a>
 					<button mat-mini-fab color="accent" (click)="del(row)">

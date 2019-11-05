@@ -1,26 +1,61 @@
 <mat-card>
-	<mat-form-field class="example-full-width">
-		<input matInput placeholder="наименование" [(ngModel)]="prodItem.group_name">
+	<mat-form-field class="full-width">
+		<input matInput placeholder="Наименование [{{ prodItem.id }}]" [(ngModel)]="prodItem.group_name">
 	</mat-form-field>
 	<br>
-	<mat-form-field class="example-full-width">
-		<input matInput placeholder="название" [(ngModel)]="prodItem.name">
+	<mat-form-field class="full-width">
+		<input matInput placeholder="Название продукта" [(ngModel)]="prodItem.name">
 	</mat-form-field>
 	<br>
-	<mat-form-field class="example-full-width">
+	<mat-form-field class="full-width">
+		<input matInput placeholder="Дополнительная информация" [(ngModel)]="prodItem.descr">
+	</mat-form-field>
+	<br>
+	<mat-form-field class="full-width">
 		<textarea matInput placeholder="Состав продукта" [(ngModel)]="prodItem.ingridients"></textarea>
 	</mat-form-field>
+	<br>
+	<mat-form-field class="full-width">
+		<textarea matInput placeholder="Условия хранения" [(ngModel)]="prodItem.storage_conditions"></textarea>
+	</mat-form-field>
+	<br>
+	<mat-form-field class="full-width">
+		<input matInput placeholder="Пищевая ценность" [(ngModel)]="prodItem.nutritional_value">
+	</mat-form-field>
+	<br>
+	<mat-form-field class="full-width">
+		<input matInput placeholder="Энергетическая ценность" [(ngModel)]="prodItem.energy_value">
+	</mat-form-field>
+
+	<div class="row">
+		<mat-form-field class="half-width">
+			<input matInput placeholder="РЦ BY" [(ngModel)]="prodItem.RC_BY">
+		</mat-form-field>
+		<mat-form-field class="half-width">
+			<input matInput placeholder="ТУ BY" [(ngModel)]="prodItem.TU_BY">
+		</mat-form-field>
+	</div>
+
+	<div class="row">
+		<mat-form-field class="third-width">
+			<input matInput placeholder="Срок гдности (дней)" [(ngModel)]="prodItem.expiration_date">
+		</mat-form-field>
+		<mat-form-field class="third-width">
+			<input matInput placeholder="СТБ" [(ngModel)]="prodItem.STB">
+		</mat-form-field>
+		<mat-form-field class="third-width">
+			<input matInput placeholder="Штрихкод" [(ngModel)]="prodItem.bar_code">
+		</mat-form-field>
+	</div>
 
 	<mat-card-actions>
-		<a mat-raised-button color="warn" [routerLink]="['/production/list']">
+		<a mat-raised-button color="warn" [routerLink]="['/production/list']" (click)="cancel()">
 			<fa-icon [icon]="faIcons.cancel"></fa-icon>
 			Отмена
 		</a>
-		<button mat-raised-button color="primary">
+		<button mat-raised-button color="primary" (click)="save()">
 			<fa-icon [icon]="faIcons.save"></fa-icon>
 			Сохранить
 		</button>
 	</mat-card-actions>
 </mat-card>
-
-<pre>{{ prodItem|json }}</pre>

@@ -17,7 +17,7 @@ import { AppComponent }                                 from './app.component';
 import { UserSelectDialogComponent, WeighingComponent } from './weighing/weighing.component';
 import { ProductionService }                            from './services/production.service';
 import { WeighingService }                              from './services/weighing.service';
-import { ProdListComponent }                            from './production/prod-list/prod-list.component';
+import { ConfirmDialogComponent, ProdListComponent }    from './production/prod-list/prod-list.component';
 import { ProdFormComponent }                            from './production/prod-form/prod-form.component';
 import { UserDeleteDialogComponent, UsersComponent }    from './users/users.component';
 import { UserService }                                  from './services/user.service';
@@ -31,10 +31,12 @@ import { UserService }                                  from './services/user.se
 		UsersComponent,
 		UserSelectDialogComponent,
 		UserDeleteDialogComponent,
+		ConfirmDialogComponent,
 	],
 	entryComponents: [
 		UserSelectDialogComponent,
 		UserDeleteDialogComponent,
+		ConfirmDialogComponent,
 	],
 	imports: [
 		BrowserModule,

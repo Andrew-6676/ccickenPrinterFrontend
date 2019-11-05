@@ -10,6 +10,7 @@ const routes: Routes = [
 	{ path: '', component: WeighingComponent },
 	{ path: 'production/list', component: ProdListComponent },
 	{ path: 'production/edit', component: ProdFormComponent },
+	{ path: 'production/edit/:id', component: ProdFormComponent },
 	{ path: 'users', component: UsersComponent },
 	{ path: '**', component: WeighingComponent }
 ];

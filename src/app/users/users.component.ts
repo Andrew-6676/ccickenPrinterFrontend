@@ -1,8 +1,8 @@
-import { Component, Inject, OnInit }                  from '@angular/core';
-import { ProductionModel }                            from '../production/production.model';
-import { UserService }                                from '../services/user.service';
-import { faSave, faTrashAlt, faUserEdit, faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef }   from '@angular/material';
+import { Component, Inject, OnInit }                           from '@angular/core';
+import { ProductionModel }                                     from '../production/production.model';
+import { UserService }                                         from '../services/user.service';
+import { faSave, faTimes, faTrashAlt, faUserEdit, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef }            from '@angular/material';
 
 @Component({
 	selector: 'app-users',
@@ -17,6 +17,7 @@ export class UsersComponent implements OnInit {
 		save: faSave,
 		del: faTrashAlt,
 		edit: faUserEdit,
+		cancel: faTimes,
 	};
 	showForm = false;
 	form = {
@@ -59,6 +60,9 @@ export class UsersComponent implements OnInit {
 					this.showForm = false;
 				},
 			);
+	}
+	cancel() {
+		this.showForm = false;
 	}
 	del(user: any) {
 		const dialogRef = this.dialog.open(UserDeleteDialogComponent, {
