@@ -56,7 +56,12 @@
   color: green;
 }
 .invisible {
-  visibility: hidden;
+  //visibility: hidden;
+  background-color: #c7c7c7;
+  height: 50%;
+  width: 75%;
+  justify-self: center;
+  align-self: center;
 }
 .srv-btn .user_name {
   //font-size: 0.8em;

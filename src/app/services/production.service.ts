@@ -67,4 +67,7 @@ export class ProductionService {
 		return this.http.delete('/api/production/' + id);
 	}
 
+	print(data) {
+		return this.http.post('/api/print/label', data);
+	}
 }

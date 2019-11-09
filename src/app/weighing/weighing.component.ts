@@ -127,6 +127,25 @@ export class WeighingComponent implements OnInit {
 				this.userService.currentUser = result;
 			});
 	}
+	/* --------------------------------------------------------------------------- */
+	test_print() {
+		const date2: Date = new Date(this.expirationDate.value);
+		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
+		this.productService
+			.print({
+				id: this.currentproductId,
+				weight: 0.667,
+				user: this.userService.currentUser.name,
+				date1: this.format_date(this.partyDate.value),
+				date2: this.format_date(this.expirationDate.value),
+				date3: this.format_date(date2),
+			})
+			.subscribe();
+	}
+
+	format_date(d: Date): string {
+		return `${(d.getDate() + '').padStart(2, '0')}.${(d.getMonth() + 1 + '').padStart(2, '0')}.${d.getFullYear()}`;
+	}
 }
 
 
