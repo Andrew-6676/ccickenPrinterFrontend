@@ -1,17 +1,17 @@
 import { Component, OnInit }                                             from '@angular/core';
-import { faSave, faTimes, faTrashAlt, faUserEdit, faUserPlus, faWeight } from '@fortawesome/free-solid-svg-icons';
 import { MatDialog }                                                     from '@angular/material';
+import { faSave, faTimes, faTrashAlt, faUserEdit, faUserPlus, faWeight } from '@fortawesome/free-solid-svg-icons';
 
 import { ProductionModel }        from '../production/production.model';
-import { UserService }            from '../services/user.service';
+import { TemplatesService }       from '../services/templates.service';
 import { ConfirmDialogComponent } from '../dialog/dialog-confirm.component';
 
 @Component({
-	selector: 'app-users',
-	templateUrl: './users.component.html',
-	styleUrls: ['./users.component.scss']
+	selector: 'app-templates',
+	templateUrl: './templates.component.html',
+	styleUrls: ['./templates.component.scss']
 })
-export class UsersComponent implements OnInit {
+export class TemplatesComponent implements OnInit {
 
 	users: any[] = [];
 	faIcons = {
@@ -26,11 +26,10 @@ export class UsersComponent implements OnInit {
 	form = {
 		id: -1,
 		name: '',
-		pass: '',
 	};
 
 	constructor(
-		public userService: UserService,
+		public templatesService: TemplatesService,
 		public dialog: MatDialog
 	) {
 	}
@@ -40,10 +39,9 @@ export class UsersComponent implements OnInit {
 	}
 
 	edit(user: any) {
-		console.log('edit user');
+		console.log('edit template');
 		this.form.id = user.id;
 		this.form.name = user.name;
-		this.form.pass = user.pass;
 		this.showForm = true;
 	}
 
@@ -51,13 +49,12 @@ export class UsersComponent implements OnInit {
 		console.log('add user');
 		this.form.id = -1;
 		this.form.name = '';
-		this.form.pass = '';
 		this.showForm = true;
 	}
 
 	save() {
-		this.userService
-			.saveUser(this.form)
+		this.templatesService
+			.uploadTemplate()
 			.subscribe(
 				resp => {
 					console.log('save resp:', resp);
@@ -82,7 +79,7 @@ export class UsersComponent implements OnInit {
 					console.log('The dialog was closed', resp);
 					if (resp) {
 						console.log('del user');
-						this.userService.delUser(user.id)
+						this.templatesService.delete(user.id)
 							.subscribe(
 								delresp => {
 									console.log('del user result:', delresp);
@@ -94,8 +91,8 @@ export class UsersComponent implements OnInit {
 	}
 
 	refresh(noCache = false) {
-		this.userService
-			.getUsers(noCache)
+		this.templatesService
+			.getTemplates(noCache)
 			.subscribe(
 				(resp: ProductionModel[]) => {
 					this.users = resp;

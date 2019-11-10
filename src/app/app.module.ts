@@ -3,6 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule }          from '@angular/platform-browser/animations';
 import { FontAwesomeModule }                from '@fortawesome/angular-fontawesome';
 import {
+	MAT_DATE_LOCALE,
 	MatButtonModule, MatCardModule, MatChipsModule,
 	MatDatepickerModule, MatDialogModule,
 	MatInputModule, MatListModule,
@@ -12,15 +13,20 @@ import {
 import { HttpClientModule }                 from '@angular/common/http';
 import { BrowserModule }                    from '@angular/platform-browser';
 
-import { AppRoutingModule }                             from './app-routing.module';
-import { AppComponent }                                 from './app.component';
-import { UserSelectDialogComponent, WeighingComponent } from './weighing/weighing.component';
-import { ProductionService }                            from './services/production.service';
-import { WeighingService }                              from './services/weighing.service';
-import { ConfirmDialogComponent, ProdListComponent }    from './production/prod-list/prod-list.component';
-import { ProdFormComponent }                            from './production/prod-form/prod-form.component';
-import { UserDeleteDialogComponent, UsersComponent }    from './users/users.component';
-import { UserService }                                  from './services/user.service';
+import { AppRoutingModule }       from './app-routing.module';
+import { AppComponent }           from './app.component';
+import { WeighingComponent }      from './weighing/weighing.component';
+import { ProductionService }      from './services/production.service';
+import { WeighingService }        from './services/weighing.service';
+import { ProdListComponent }      from './production/prod-list/prod-list.component';
+import { ProdFormComponent }      from './production/prod-form/prod-form.component';
+import { UsersComponent }         from './users/users.component';
+import { UserService }            from './services/user.service';
+import { SelectDialogComponent }  from './dialog/dialog-select.component';
+import { TemplatesComponent }     from './templates/templates.component';
+import { TemplatesService }       from './services/templates.service';
+import { ConfirmDialogComponent } from './dialog/dialog-confirm.component';
+import { ParamsService }          from './services/paramsService';
 
 @NgModule({
 	declarations: [
@@ -29,14 +35,13 @@ import { UserService }                                  from './services/user.se
 		ProdListComponent,
 		ProdFormComponent,
 		UsersComponent,
-		UserSelectDialogComponent,
-		UserDeleteDialogComponent,
+		TemplatesComponent,
 		ConfirmDialogComponent,
+		SelectDialogComponent,
 	],
 	entryComponents: [
-		UserSelectDialogComponent,
-		UserDeleteDialogComponent,
 		ConfirmDialogComponent,
+		SelectDialogComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -60,6 +65,9 @@ import { UserService }                                  from './services/user.se
 		ProductionService,
 		WeighingService,
 		UserService,
+		TemplatesService,
+		ParamsService,
+		{provide: MAT_DATE_LOCALE, useValue: 'ru-RU'},
 	],
 	bootstrap: [AppComponent]
 })

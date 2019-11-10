@@ -37,14 +37,17 @@
 	</div>
 
 	<div class="row">
-		<mat-form-field class="third-width">
+		<mat-form-field class="quart-width">
 			<input matInput placeholder="Срок гдности (дней)" [(ngModel)]="prodItem.expiration_date">
 		</mat-form-field>
-		<mat-form-field class="third-width">
+		<mat-form-field class="quart-width">
 			<input matInput placeholder="СТБ" [(ngModel)]="prodItem.STB">
 		</mat-form-field>
-		<mat-form-field class="third-width">
-			<input matInput placeholder="Штрихкод" [(ngModel)]="prodItem.bar_code">
+		<mat-form-field class="quart-width">
+			<input matInput placeholder="EAN-13 штрихкод" [(ngModel)]="prodItem.bar_code" [disabled]="true">
+		</mat-form-field>
+		<mat-form-field class="quart-width">
+			<input matInput placeholder="Префикс code128" [(ngModel)]="prodItem.code128_prefix">
 		</mat-form-field>
 	</div>
 

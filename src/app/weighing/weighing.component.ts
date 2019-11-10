@@ -1,19 +1,22 @@
-import { Component, Inject, OnInit }                from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { FormControl }       from '@angular/forms';
+import { MatDialog }         from '@angular/material';
+
 import {
 	faBackspace,
 	faBoxOpen,
-	faEquals, faPeopleCarry,
+	faEquals, faFileExcel, faPeopleCarry,
 	faPrint,
 	faUser,
 	faWeight,
 	faWindowClose
-}                                                   from '@fortawesome/free-solid-svg-icons';
-
-import { ProductionService } from '../services/production.service';
-import { UserService }       from '../services/user.service';
-import { FormControl }       from '@angular/forms';
-import { ProductionModel }   from '../production/production.model';
+}                                from '@fortawesome/free-solid-svg-icons';
+import { ProductionService }     from '../services/production.service';
+import { UserService }           from '../services/user.service';
+import { ProductionModel }       from '../production/production.model';
+import { SelectDialogComponent } from '../dialog/dialog-select.component';
+import { TemplatesService }      from '../services/templates.service';
+import { WeighingService }       from '../services/weighing.service';
 
 @Component({
 	selector: 'app-weighing',
@@ -29,7 +32,8 @@ export class WeighingComponent implements OnInit {
 		print: faPrint,
 		tareReset: faPeopleCarry,
 		reset: faWindowClose,
-		delete: faBackspace
+		delete: faBackspace,
+		excel: faFileExcel,
 	};
 
 	production: any[] = [];
@@ -38,7 +42,6 @@ export class WeighingComponent implements OnInit {
 	currentproductId = -1;
 
 	usersList: any[] = [];
-
 	palletNumber = 1;
 	packsPerBox = 10;
 
@@ -54,7 +57,9 @@ export class WeighingComponent implements OnInit {
 
 	constructor(
 		public productService: ProductionService,
+		public templatesService: TemplatesService,
 		public userService: UserService,
+		public weighingService: WeighingService,
 		public dialog: MatDialog
 	) {
 	}
@@ -74,6 +79,24 @@ export class WeighingComponent implements OnInit {
 			.subscribe(
 				resp => this.usersList = resp,
 			);
+
+		this.templatesService
+			.getTemplates()
+			.subscribe();
+
+		const elem: any = document.documentElement;
+		if (elem.requestFullscreen) {
+			elem.requestFullscreen();
+		} else if (elem.mozRequestFullScreen) {
+			/* Firefox */
+			elem.mozRequestFullScreen();
+		} else if (elem.webkitRequestFullscreen) {
+			/* Chrome, Safari and Opera */
+			elem.webkitRequestFullscreen();
+		} else if (elem.msRequestFullscreen) {
+			/* IE/Edge */
+			elem.msRequestFullscreen();
+		}
 	}
 
 	/* --------------------------------------------------------------------------- */
@@ -81,6 +104,7 @@ export class WeighingComponent implements OnInit {
 		const date: Date = fcDate.value;
 		fcDate.setValue(new Date(date.setDate(date.getDate() + operation)));
 	}
+
 	/* --------------------------------------------------------------------------- */
 
 	NumPress(btn: string) {
@@ -108,33 +132,57 @@ export class WeighingComponent implements OnInit {
 			if (p.id == this.currentPlu) {
 				this.currentproduct = p;
 				this.currentproductId = p.id;
+				this.currentPlu = '';
 				return;
 			}
 		}
 		this.currentproduct = null;
 		this.currentproductId = -1;
 	}
+
 	/* --------------------------------------------------------------------------- */
 	getUser() {
-		const dialogRef = this.dialog.open(UserSelectDialogComponent, {
+		const dialogRef = this.dialog.open(SelectDialogComponent, {
 			data: this.usersList
 		});
 
 		dialogRef.afterClosed()
-		.subscribe(
-			result => {
-				console.log('The dialog was closed', result);
-				this.userService.currentUser = result;
-			});
+			.subscribe(
+				result => {
+					this.userService.currentUser = result;
+				});
 	}
+
 	/* --------------------------------------------------------------------------- */
-	test_print() {
+	selectTemplate() {
+		const dialogRef = this.dialog.open(SelectDialogComponent, {
+			data: this.templatesService.templates
+		});
+
+		dialogRef.afterClosed()
+			.subscribe(
+				result => {
+					this.templatesService.currentTemplate = result;
+					localStorage.setItem('template', JSON.stringify(result));
+				});
+	}
+
+	/* --------------------------------------------------------------------------- */
+	test_print(weight = 0.667) {
 		const date2: Date = new Date(this.expirationDate.value);
 		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
+
+		const code128: string = this.currentproduct.code128_prefix
+			+ ((this.currentproduct.id + '').padStart(5, '0'))
+			+ (weight + '').replace('.', '').padStart(5, '0')
+			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1');
+
 		this.productService
 			.print({
 				id: this.currentproductId,
-				weight: 0.667,
+				template: this.templatesService.currentTemplate.id,
+				weight,
+				code128,
 				user: this.userService.currentUser.name,
 				date1: this.format_date(this.partyDate.value),
 				date2: this.format_date(this.expirationDate.value),
@@ -146,34 +194,4 @@ export class WeighingComponent implements OnInit {
 	format_date(d: Date): string {
 		return `${(d.getDate() + '').padStart(2, '0')}.${(d.getMonth() + 1 + '').padStart(2, '0')}.${d.getFullYear()}`;
 	}
-}
-
-
-@Component({
-	selector: 'app-user-select-dialog',
-	styles: [`
-		button {
-			display: block;
-			width: 150px;
-			margin: 4px 0;
-			padding: 15px;
-		}
-	`],
-	template: `
-		<button mat-stroked-button color="primary" *ngFor="let user of data" (click)="onUserClick(user)">
-			{{ user.name }}
-		</button>
-	`,
-})
-export class UserSelectDialogComponent {
-
-	constructor(
-		public dialogRef: MatDialogRef<UserSelectDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: any) {
-	}
-
-	onUserClick(user: any): void {
-		this.dialogRef.close(user);
-	}
-
 }

@@ -6,6 +6,8 @@ import {of}         from 'rxjs';
 })
 export class WeighingService {
 
+	currentTare = 0;
+
 	constructor() {
 	}
 
@@ -21,4 +23,5 @@ export class WeighingService {
 		return of({});
 	}
 
+	// тут же сделать коннект по вебсокету для мгновенной обратной связи
 }

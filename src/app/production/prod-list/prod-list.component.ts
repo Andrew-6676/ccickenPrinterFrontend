@@ -1,12 +1,13 @@
-import { Component, Inject, OnInit }                from '@angular/core';
-import { ProductionService }                        from '../../services/production.service';
-import { ProductionModel }                          from '../production.model';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog }         from '@angular/material';
 import {
 	faEdit, faPlus, faPrint, faSyncAlt,
 	faTrashAlt, faWeight,
-}                                                   from '@fortawesome/free-solid-svg-icons';
-import { UserDeleteDialogComponent }                from '../../users/users.component';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+}                            from '@fortawesome/free-solid-svg-icons';
+
+import { ConfirmDialogComponent } from '../../dialog/dialog-confirm.component';
+import { ProductionService }      from '../../services/production.service';
+import { ProductionModel }        from '../production.model';
 
 @Component({
 	selector: 'app-prod-list',
@@ -82,42 +83,4 @@ export class ProdListComponent implements OnInit {
 					}
 				});
 	}
-}
-
-
-@Component({
-	selector: 'app-confirm-dialog',
-	styles: [`
-		button {
-			display: block;
-			width: 150px;
-			margin: 4px 0;
-			padding: 15px;
-		}
-	`],
-	template: `
-        <div mat-dialog-content>
-            Удалить продукт <b>{{ data.name }}</b>?
-        </div>
-        <div mat-dialog-actions>
-            <button mat-stroked-button color="accent" (click)="choise(false)">
-                Отмена
-            </button>
-            <button mat-raised-button color="warn" (click)="choise(true)">
-                Удалить
-            </button>
-        </div>
-	`,
-})
-export class ConfirmDialogComponent {
-
-	constructor(
-		public dialogRef: MatDialogRef<ConfirmDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: any) {
-	}
-
-	choise(res: any): void {
-		this.dialogRef.close(res);
-	}
-
 }

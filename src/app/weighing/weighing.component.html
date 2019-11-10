@@ -2,21 +2,18 @@
 	<br>
 	<mat-chip-list>
 		<mat-chip color="accent" selected>Ожидаем подключения весов</mat-chip>
+		<br>
+		<mat-chip color="primary" selected>
+			Выбранный продукт: &nbsp; <b>[{{currentproduct?.id}}]</b>&nbsp;-&nbsp;{{ currentproduct?.name }}
+		</mat-chip>
 	</mat-chip-list>
-	<br>
-	Выбранный продукт - {{ currentproduct?.name }}
+
 </div>
 
 <div class="plu">
 	PLU: {{ currentPlu }}
 </div>
 
-<nav class="menu">
-	<ul>
-		<li><a routerLink="/production/list">Продукция</a></li>
-		<li><a routerLink="/users">Пользователи</a></li>
-	</ul>
-</nav>
 <hr>
 
 <div class="keyboard">
@@ -26,11 +23,13 @@
 			[disabled]="!userService.currentUser">2</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('3')"
 			[disabled]="!userService.currentUser">3</button>
-	<button mat-raised-button class="weiging-btn srv-btn" (click)="getProduct()"
+	<button mat-raised-button class="weiging-btn srv-btn plu-btn" (click)="getProduct()"
 			[disabled]="!userService.currentUser">PLU</button>
 	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser">
 		<fa-icon [icon]="faIcons.tare"></fa-icon>
 		Тара
+		<br>
+		{{ weighingService?.currentTare }}
 	</button>
 
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('4')"
@@ -63,16 +62,24 @@
 			[disabled]="!userService.currentUser">9</button>
 	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser">
 		<fa-icon [icon]="faIcons.weight"></fa-icon>
-		Взвешивание
+		Взвешать
 	</button>
-	<button mat-raised-button
-			class="weiging-btn srv-bt invisible"
-			(click)="test_print()"
-			[disabled]="currentproductId<0">
-		<fa-icon [icon]="faIcons.print"></fa-icon>
-		test
-	</button>
-
+	<div class="double-btn">
+		<button class="weiging-btn srv-bt"
+				mat-raised-button
+				(click)="selectTemplate()"
+				[disabled]="!userService.currentUser">
+			<fa-icon [icon]="faIcons.excel"></fa-icon>
+			Шаблон: {{templatesService.currentTemplate?.id}}
+		</button>
+		<button mat-raised-button
+				class="weiging-btn srv-bt"
+				(click)="test_print()"
+				[disabled]="currentproductId<0">
+			<fa-icon [icon]="faIcons.print"></fa-icon>
+			Тест
+		</button>
+	</div>
 	<button mat-raised-button class="weiging-btn red-btn" (click)="NumPress('reset')"
 			[disabled]="!userService.currentUser">
 		<fa-icon [icon]="faIcons.reset"></fa-icon>
@@ -156,6 +163,7 @@
 
 		</div>
 	</div>
+
 	<hr>
 
 	<table class="table-totals">
@@ -176,3 +184,13 @@
 
 
 </div>
+
+<hr>
+
+<nav class="menu">
+	<ul>
+		<li><a routerLink="/production/list">Продукция</a></li>
+		<li><a routerLink="/users">Пользователи</a></li>
+		<li><a routerLink="/templates">Шаблоны</a></li>
+	</ul>
+</nav>

@@ -11,6 +11,7 @@ export interface ProductionModel {
 	TU_BY: string;
 	STB: string;
 	expiration_date: number;
-	bar_code: number;
+	bar_code: string;
+	code128_prefix: string;
 	deleted: number;
 }
