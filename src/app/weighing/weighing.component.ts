@@ -17,6 +17,7 @@ import { ProductionModel }       from '../production/production.model';
 import { SelectDialogComponent } from '../dialog/dialog-select.component';
 import { TemplatesService }      from '../services/templates.service';
 import { WeighingService }       from '../services/weighing.service';
+import { WebsocketService }      from '../ws/ws.service';
 
 @Component({
 	selector: 'app-weighing',
@@ -60,10 +61,11 @@ export class WeighingComponent implements OnInit {
 		public templatesService: TemplatesService,
 		public userService: UserService,
 		public weighingService: WeighingService,
-		public dialog: MatDialog
+		public dialog: MatDialog,
+		private wsService: WebsocketService
 	) {
 	}
-
+	// https://github.com/AlexDaSoul/angular-websocket-starter/tree/master/src/app
 	/* --------------------------------------------------------------------------- */
 
 	ngOnInit() {
@@ -103,6 +105,7 @@ export class WeighingComponent implements OnInit {
 	changeDate(fcDate: FormControl, operation: number) {
 		const date: Date = fcDate.value;
 		fcDate.setValue(new Date(date.setDate(date.getDate() + operation)));
+		this.prepareDataForPrint();
 	}
 
 	/* --------------------------------------------------------------------------- */
@@ -133,6 +136,7 @@ export class WeighingComponent implements OnInit {
 				this.currentproduct = p;
 				this.currentproductId = p.id;
 				this.currentPlu = '';
+				this.prepareDataForPrint();
 				return;
 			}
 		}
@@ -167,6 +171,31 @@ export class WeighingComponent implements OnInit {
 				});
 	}
 
+	/* --------------------------------------------------------------------------- */
+	/**
+	 * Отправить данные из которых будет формироваться этикетка:
+	 */
+	prepareDataForPrint() {
+		const date2: Date = new Date(this.expirationDate.value);
+		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
+
+		const code128: string = this.currentproduct.code128_prefix
+			+ ((this.currentproduct.id + '').padStart(5, '0'))
+			+ '-----'
+			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1');
+
+		this.weighingService.preparePrintData({
+				id: this.currentproductId,
+				template: this.templatesService.currentTemplate.id,
+				code128,
+				tare: this.weighingService.currentTare,
+				user: this.userService.currentUser.name,
+				user_id: this.userService.currentUser.id,
+				date1: this.format_date(this.partyDate.value),
+				date2: this.format_date(this.expirationDate.value),
+				date3: this.format_date(date2),
+			}).subscribe();
+	}
 	/* --------------------------------------------------------------------------- */
 	test_print(weight = 0.667) {
 		const date2: Date = new Date(this.expirationDate.value);

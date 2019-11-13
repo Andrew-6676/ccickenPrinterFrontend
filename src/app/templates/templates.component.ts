@@ -1,6 +1,15 @@
-import { Component, OnInit }                                             from '@angular/core';
-import { MatDialog }                                                     from '@angular/material';
-import { faSave, faTimes, faTrashAlt, faUserEdit, faUserPlus, faWeight } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit }                                                           from '@angular/core';
+import { MatDialog }                                                                   from '@angular/material';
+import {
+	faFileDownload,
+	faFileUpload,
+	faSave,
+	faTimes,
+	faTrashAlt,
+	faUserEdit,
+	faUserPlus,
+	faWeight
+} from '@fortawesome/free-solid-svg-icons';
 
 import { ProductionModel }        from '../production/production.model';
 import { TemplatesService }       from '../services/templates.service';
@@ -13,8 +22,10 @@ import { ConfirmDialogComponent } from '../dialog/dialog-confirm.component';
 })
 export class TemplatesComponent implements OnInit {
 
-	users: any[] = [];
+	templates: any[] = [];
 	faIcons = {
+		upload: faFileUpload,
+		download: faFileDownload,
 		add: faUserPlus,
 		save: faSave,
 		del: faTrashAlt,
@@ -38,15 +49,15 @@ export class TemplatesComponent implements OnInit {
 		this.refresh();
 	}
 
-	edit(user: any) {
+	edit(template: any) {
 		console.log('edit template');
-		this.form.id = user.id;
-		this.form.name = user.name;
+		this.form.id = template.id;
+		this.form.name = template.name;
 		this.showForm = true;
 	}
 
 	add() {
-		console.log('add user');
+		console.log('add template');
 		this.form.id = -1;
 		this.form.name = '';
 		this.showForm = true;
@@ -68,9 +79,9 @@ export class TemplatesComponent implements OnInit {
 		this.showForm = false;
 	}
 
-	del(user: any) {
+	del(template: any) {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-			data: user,
+			data: template,
 		});
 
 		dialogRef.afterClosed()
@@ -78,11 +89,11 @@ export class TemplatesComponent implements OnInit {
 				resp => {
 					console.log('The dialog was closed', resp);
 					if (resp) {
-						console.log('del user');
-						this.templatesService.delete(user.id)
+						console.log('del template');
+						this.templatesService.delete(template.id)
 							.subscribe(
 								delresp => {
-									console.log('del user result:', delresp);
+									console.log('del template result:', delresp);
 									this.refresh(true);
 								},
 							);
@@ -95,7 +106,7 @@ export class TemplatesComponent implements OnInit {
 			.getTemplates(noCache)
 			.subscribe(
 				(resp: ProductionModel[]) => {
-					this.users = resp;
+					this.templates = resp;
 				}
 			);
 	}

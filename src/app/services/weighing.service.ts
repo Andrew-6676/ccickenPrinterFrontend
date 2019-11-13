@@ -1,14 +1,15 @@
-import {Injectable} from '@angular/core';
-import {of}         from 'rxjs';
+import {Injectable}   from '@angular/core';
+import {of}           from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class WeighingService {
 
-	currentTare = 0;
+	currentTare = 0.022;
 
-	constructor() {
+	constructor(private http: HttpClient) {
 	}
 
 	gwtWeight() {
@@ -23,5 +24,8 @@ export class WeighingService {
 		return of({});
 	}
 
+	preparePrintData(data: any) {
+		return this.http.post('/api/print/prepare', data);
+	}
 	// тут же сделать коннект по вебсокету для мгновенной обратной связи
 }

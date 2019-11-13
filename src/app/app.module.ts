@@ -27,6 +27,8 @@ import { TemplatesComponent }     from './templates/templates.component';
 import { TemplatesService }       from './services/templates.service';
 import { ConfirmDialogComponent } from './dialog/dialog-confirm.component';
 import { ParamsService }          from './services/paramsService';
+import { WebsocketModule }        from './ws/ws.module';
+import { environment }            from '../environments/environment';
 
 @NgModule({
 	declarations: [
@@ -59,7 +61,10 @@ import { ParamsService }          from './services/paramsService';
 		MatCardModule,
 		MatChipsModule,
 		MatListModule,
-		MatDialogModule
+		MatDialogModule,
+		WebsocketModule.config({
+			url: environment.ws
+		})
 	],
 	providers: [
 		ProductionService,

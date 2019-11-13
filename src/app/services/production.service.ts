@@ -11,7 +11,7 @@ export class ProductionService {
 
 	cache = null;
 
-	constructor( private http: HttpClient) {
+	constructor( private http: HttpClient ) {
 	}
 
 	getProduction(noCache = false) {
