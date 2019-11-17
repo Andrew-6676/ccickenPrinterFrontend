@@ -62,9 +62,7 @@ import { environment }            from '../environments/environment';
 		MatChipsModule,
 		MatListModule,
 		MatDialogModule,
-		WebsocketModule.config({
-			url: environment.ws
-		})
+		WebsocketModule
 	],
 	providers: [
 		ProductionService,

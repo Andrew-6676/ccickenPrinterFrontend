@@ -4,6 +4,7 @@ import { CommonModule }                  from '@angular/common';
 import { WebsocketService } from './ws.service';
 import { config }           from './ws.config';
 import { WebSocketConfig }  from './ws.interfaces';
+import { environment }      from '../../environments/environment';
 
 
 @NgModule({
@@ -12,7 +13,12 @@ import { WebSocketConfig }  from './ws.interfaces';
 	],
 	declarations: [],
 	providers: [
-		WebsocketService
+		WebsocketService,
+		{
+			provide: config, useValue: {
+				url: environment.ws
+			}
+		}
 	]
 })
 export class WebsocketModule {
