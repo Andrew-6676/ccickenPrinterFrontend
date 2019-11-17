@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl }       from '@angular/forms';
-import { MatDialog }         from '@angular/material';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl }                  from '@angular/forms';
+import { MatDialog }                    from '@angular/material';
 
 import {
 	faBackspace,
@@ -12,19 +12,23 @@ import {
 	faWindowClose
 }                                from '@fortawesome/free-solid-svg-icons';
 import { ProductionService }     from '../services/production.service';
-import { UserService }           from '../services/user.service';
-import { ProductionModel }       from '../production/production.model';
-import { SelectDialogComponent } from '../dialog/dialog-select.component';
-import { TemplatesService }      from '../services/templates.service';
-import { WeighingService }       from '../services/weighing.service';
-import { WebsocketService }      from '../ws/ws.service';
+import { UserService }            from '../services/user.service';
+import { ProductionModel }        from '../production/production.model';
+import { SelectDialogComponent }  from '../dialog/dialog-select.component';
+import { TemplatesService }       from '../services/templates.service';
+import { WeighingService }        from '../services/weighing.service';
+import { WebsocketService }       from '../ws/ws.service';
+import { Observable, Subject }    from 'rxjs';
+import { WS }                     from '../ws.events';
+import { subscribeOn, takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-weighing',
 	templateUrl: './weighing.component.html',
 	styleUrls: ['./weighing.component.scss']
 })
-export class WeighingComponent implements OnInit {
+export class WeighingComponent implements OnInit, OnDestroy {
+	destroy$: Subject<boolean> = new Subject<boolean>();
 	faIcons = {
 		user: faUser,
 		weight: faWeight,
@@ -37,6 +41,8 @@ export class WeighingComponent implements OnInit {
 		excel: faFileExcel,
 	};
 
+	serverConnected = false;
+
 	production: any[] = [];
 	currentPlu = '';
 	currentproduct: ProductionModel = null;
@@ -46,15 +52,14 @@ export class WeighingComponent implements OnInit {
 	palletNumber = 1;
 	packsPerBox = 10;
 
-	totals = {
-		packs: 0,
-		netto: 0,
-		tare: 0,
-		brutto: 0
-	};
-
 	partyDate = new FormControl(new Date());
 	expirationDate = new FormControl(new Date());
+
+	getTareMode = false;
+
+	private messages$: Observable<any>;
+	private weight$: Observable<any>;
+	private scales$: Observable<any>;
 
 	constructor(
 		public productService: ProductionService,
@@ -71,6 +76,9 @@ export class WeighingComponent implements OnInit {
 	ngOnInit() {
 		this.productService
 			.getProduction()
+			.pipe(
+				takeUntil(this.destroy$),
+			)
 			.subscribe(
 				(resp: any[]) => {
 					this.production = resp;
@@ -78,6 +86,9 @@ export class WeighingComponent implements OnInit {
 			);
 		this.userService
 			.getUsers()
+			.pipe(
+				takeUntil(this.destroy$),
+			)
 			.subscribe(
 				resp => this.usersList = resp,
 			);
@@ -90,17 +101,86 @@ export class WeighingComponent implements OnInit {
 		if (elem.requestFullscreen) {
 			elem.requestFullscreen();
 		} else if (elem.mozRequestFullScreen) {
-			/* Firefox */
-			elem.mozRequestFullScreen();
+			elem.mozRequestFullScreen();        /* Firefox */
 		} else if (elem.webkitRequestFullscreen) {
-			/* Chrome, Safari and Opera */
-			elem.webkitRequestFullscreen();
+			elem.webkitRequestFullscreen();     /* Chrome, Safari and Opera */
 		} else if (elem.msRequestFullscreen) {
-			/* IE/Edge */
-			elem.msRequestFullscreen();
+			elem.msRequestFullscreen();         /* IE/Edge */
 		}
+
+		// WS messages
+		this.messages$ = this.wsService.on<any>(WS.ON.MESSAGES);
+		this.weight$ = this.wsService.on<any>(WS.ON.WEIGHT);
+		this.scales$ = this.wsService.on<any>(WS.ON.SCALES);
+
+		this.messages$.pipe(
+				takeUntil(this.destroy$),
+			).subscribe(resp => {
+			console.log('WEBSOKET [message]:', resp);
+		});
+		this.weight$.pipe(
+			takeUntil(this.destroy$),
+		).subscribe((weight) => {
+			weight = JSON.parse(weight) * 1;
+			console.log('WEBSOKET [weight]:', weight);
+			this.weighingService.currentWeight = weight;
+			if (weight === 0) {
+				return;
+			}
+			if (this.getTareMode) {
+				this.weighingService.currentTare = weight;
+				this.getTareMode = false;
+				return;
+			}
+			if (this.currentproduct) {
+				this.weighingService.totals.packs++;
+				this.weighingService.totals.netto += weight;
+				this.weighingService.totals.netto = Math.round(this.weighingService.totals.netto * 1000) / 1000;
+				this.weighingService.totals.tare += this.weighingService.currentTare;
+				this.weighingService.totals.tare = Math.round(this.weighingService.totals.tare * 1000) / 1000;
+				this.weighingService.totals.brutto = Math.round((this.weighingService.totals.netto
+					+ this.weighingService.totals.tare) * 1000) / 1000;
+			}
+		});
+		this.scales$.pipe(
+			takeUntil(this.destroy$),
+		).subscribe((resp: any) => {
+			resp = JSON.parse(resp);
+			// console.log('WEBSOKET [scales]:', resp);
+			this.weighingService.scales.connected = resp.connected;
+			this.weighingService.scales.message = resp.message;
+			console.log(this.weighingService.scales);
+		});
+
+		this.wsService
+			.status
+			.subscribe(
+				status => {
+					this.getTareMode = false;
+					if (status) {
+						this.serverConnected = true;
+						this.getScalesStatus();
+						if (this.currentproduct) {
+							this.prepareDataForPrint();
+						}
+					} else {
+						this.serverConnected = false;
+						this.weighingService.scales.connected = false;
+						this.weighingService.scales.message = 'Связь потеряна';
+					}
+				},
+			);
 	}
 
+	public getScalesStatus(): void {
+		this.wsService.send(WS.SEND.GET_STATUS, 'any');
+	}
+
+	/* --------------------------------------------------------------------------- */
+	getTare() {
+		this.getTareMode = true;
+		this.wsService.send(WS.SEND.GET_TARE, '0');
+	}
 	/* --------------------------------------------------------------------------- */
 	changeDate(fcDate: FormControl, operation: number) {
 		const date: Date = fcDate.value;
@@ -140,6 +220,7 @@ export class WeighingComponent implements OnInit {
 				return;
 			}
 		}
+		this.prepareDataForPrint(true);
 		this.currentproduct = null;
 		this.currentproductId = -1;
 	}
@@ -175,7 +256,11 @@ export class WeighingComponent implements OnInit {
 	/**
 	 * Отправить данные из которых будет формироваться этикетка:
 	 */
-	prepareDataForPrint() {
+	prepareDataForPrint(clear = false) {
+		if (clear) {
+			this.weighingService.preparePrintData({clear: true}).subscribe();
+			return;
+		}
 		const date2: Date = new Date(this.expirationDate.value);
 		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
 
@@ -197,6 +282,37 @@ export class WeighingComponent implements OnInit {
 			}).subscribe();
 	}
 	/* --------------------------------------------------------------------------- */
+	printTotal() {
+		const date2: Date = new Date(this.expirationDate.value);
+		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
+		console.log(this.weighingService.totals.netto);
+		const code128: string = this.currentproduct.code128_prefix
+			+ (this.currentproduct.id + '').replace('.','').padStart(5, '0')
+			+ (this.weighingService.totals.netto + '').padStart(5, '0')
+			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1');
+
+		this.weighingService.printTotal({
+			id: this.currentproductId,
+			template: this.templatesService.currentTemplate.id,
+			code128,
+			packs: this.weighingService.totals.packs,
+			totalWeight: this.weighingService.totals.netto,
+			tare: this.weighingService.currentTare,
+			user: this.userService.currentUser.name,
+			user_id: this.userService.currentUser.id,
+			date1: this.format_date(this.partyDate.value),
+			date2: this.format_date(this.expirationDate.value),
+			date3: this.format_date(date2),
+		}).subscribe(
+			resp => {
+				this.weighingService.totals.packs = 0;
+				this.weighingService.totals.netto = 0;
+				this.weighingService.totals.tare = 0;
+				this.weighingService.totals.brutto = 0;
+			}
+		);
+	}
+	/* --------------------------------------------------------------------------- */
 	test_print(weight = 0.667) {
 		const date2: Date = new Date(this.expirationDate.value);
 		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
@@ -206,7 +322,7 @@ export class WeighingComponent implements OnInit {
 			+ (weight + '').replace('.', '').padStart(5, '0')
 			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1');
 
-		this.productService
+		this.weighingService
 			.print({
 				id: this.currentproductId,
 				template: this.templatesService.currentTemplate.id,
@@ -222,5 +338,10 @@ export class WeighingComponent implements OnInit {
 
 	format_date(d: Date): string {
 		return `${(d.getDate() + '').padStart(2, '0')}.${(d.getMonth() + 1 + '').padStart(2, '0')}.${d.getFullYear()}`;
+	}
+
+	ngOnDestroy() {
+		this.destroy$.next(true);
+		this.destroy$.unsubscribe();
 	}
 }

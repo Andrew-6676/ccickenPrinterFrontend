@@ -1,9 +1,15 @@
 <div class="status">
 	<br>
 	<mat-chip-list>
-		<mat-chip color="accent" selected>Ожидаем подключения весов</mat-chip>
+		<mat-chip class="w40"
+				  [ngClass]="{ok: serverConnected, error: !serverConnected}"
+				  selected>Сервер: {{ serverConnected ? 'Ok' : 'Disconnected' }}</mat-chip>
+		<mat-chip class="w40"
+				  [ngClass]="{ok: weighingService.scales.connected, error: !weighingService.scales.connected}"
+				  selected>Весы: {{ weighingService.scales.message }}</mat-chip>
 		<br>
-		<mat-chip color="primary" selected>
+		<mat-chip color="primary" selected class="w80"
+				  [color]="currentproduct ? 'primary' : 'accent'">
 			Выбранный продукт: &nbsp; <b>[{{currentproduct?.id}}]</b>&nbsp;-&nbsp;{{ currentproduct?.name }}
 		</mat-chip>
 	</mat-chip-list>
@@ -25,7 +31,9 @@
 			[disabled]="!userService.currentUser">3</button>
 	<button mat-raised-button class="weiging-btn srv-btn plu-btn" (click)="getProduct()"
 			[disabled]="!userService.currentUser">PLU</button>
-	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser">
+	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser"
+			[ngClass]="{tare_active: getTareMode}"
+			(click)="getTare()">
 		<fa-icon [icon]="faIcons.tare"></fa-icon>
 		Тара
 		<br>
@@ -49,7 +57,8 @@
 			{{ userService.currentUser?.name }}
 		</span>
 	</button>
-	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser">
+	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser"
+			(click)="weighingService.currentTare = 0">
 		<fa-icon [icon]="faIcons.tareReset"></fa-icon>
 		Сброс тары
 	</button>
@@ -60,9 +69,11 @@
 			[disabled]="!userService.currentUser">8</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('9')"
 			[disabled]="!userService.currentUser">9</button>
-	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser">
+	<button mat-raised-button class="weiging-btn srv-btn scales-btn" [disabled]="!userService.currentUser">
 		<fa-icon [icon]="faIcons.weight"></fa-icon>
-		Взвешать
+		На весах:
+		<br>
+		{{ weighingService.currentWeight }} кг
 	</button>
 	<div class="double-btn">
 		<button class="weiging-btn srv-bt"
@@ -92,7 +103,8 @@
 		<fa-icon [icon]="faIcons.delete"></fa-icon>
 		Удалить
 	</button>
-	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser">
+	<button mat-raised-button class="weiging-btn srv-btn" (click)="printTotal()"
+			[disabled]="!userService.currentUser">
 		<fa-icon [icon]="faIcons.total"></fa-icon>
 		Итог
 	</button>
@@ -174,10 +186,10 @@
 			<th>Вес партии, кг</th>
 		</tr>
 		<tr>
-			<td>{{ totals.packs }}</td>
-			<td>{{ totals.netto }}</td>
-			<td>{{ totals.tare }}</td>
-			<td>{{ totals.brutto }}</td>
+			<td>{{ weighingService.totals.packs }}</td>
+			<td>{{ weighingService.totals.netto }}</td>
+			<td>{{ weighingService.totals.tare }}</td>
+			<td>{{ weighingService.totals.brutto }}</td>
 		</tr>
 	</table>
 

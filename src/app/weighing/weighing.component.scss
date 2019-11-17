@@ -56,6 +56,13 @@
 .srv-btn {
   color: green;
 }
+.tare_active {
+  border: 10px dashed red;
+}
+.scales-btn {
+  background: #333333;
+  color: #fff;
+}
 .invisible {
   //visibility: hidden;
   background-color: #c7c7c7;
@@ -93,8 +100,19 @@
   text-align: center;
 }
 
-.status mat-chip {
-  width: 80%;
+.status {
+  mat-chip.w40 {
+    width: 40%;
+  }
+  mat-chip.error {
+    background: #f00;
+  }
+  mat-chip.ok {
+    background: #3dcf8c;
+  }
+  mat-chip.w80 {
+    width: 81%;
+  }
 }
 
 .double-btn {

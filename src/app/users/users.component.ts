@@ -1,6 +1,6 @@
-import { Component, OnInit }                                             from '@angular/core';
-import { faSave, faTimes, faTrashAlt, faUserEdit, faUserPlus, faWeight } from '@fortawesome/free-solid-svg-icons';
-import { MatDialog }                                                     from '@angular/material';
+import { Component, OnInit }                                                        from '@angular/core';
+import { faRecycle, faSave, faTimes, faTrashAlt, faUserEdit, faUserPlus, faWeight } from '@fortawesome/free-solid-svg-icons';
+import { MatDialog }                                                                from '@angular/material';
 
 import { ProductionModel }        from '../production/production.model';
 import { UserService }            from '../services/user.service';
@@ -15,6 +15,7 @@ export class UsersComponent implements OnInit {
 
 	users: any[] = [];
 	faIcons = {
+		refresh: faRecycle,
 		add: faUserPlus,
 		save: faSave,
 		del: faTrashAlt,

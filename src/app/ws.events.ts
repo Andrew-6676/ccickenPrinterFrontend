@@ -1,11 +1,13 @@
 export const WS = {
 	ON: {
+		COMPORT: 'comport',
+		WEIGHT: 'weight',
+		SCALES: 'scales',
+		PRINT: 'print',
 		MESSAGES: 'messages',
-		COUNTER: 'counter',
-		UPDATE_TEXTS: 'update-texts'
 	},
 	SEND: {
-		SEND_TEXT: 'set-text',
-		REMOVE_TEXT: 'remove-text'
+		GET_TARE: 'get-tare',
+		GET_STATUS: 'get-status'
 	}
 };

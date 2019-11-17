@@ -7,7 +7,18 @@ import { HttpClient } from '@angular/common/http';
 })
 export class WeighingService {
 
-	currentTare = 0.022;
+	scales = {
+		connected: false,
+		message: ' - неизвестно - ',
+	};
+	currentTare = 0.0;
+	currentWeight = 0.0;
+	totals = {
+		packs: 0,
+		netto: 0,
+		tare: 0,
+		brutto: 0,
+	};
 
 	constructor(private http: HttpClient) {
 	}
@@ -23,9 +34,16 @@ export class WeighingService {
 	reset() {
 		return of({});
 	}
-
+	ping() {
+		return this.http.get('/api/ping');
+	}
 	preparePrintData(data: any) {
 		return this.http.post('/api/print/prepare', data);
 	}
-	// тут же сделать коннект по вебсокету для мгновенной обратной связи
+	print(data) {
+		return this.http.post('/api/print/label', data);
+	}
+	printTotal(data) {
+		return this.http.post('/api/print/total', data);
+	}
 }

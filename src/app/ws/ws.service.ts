@@ -34,7 +34,7 @@ export class WebsocketService implements IWebsocketService, OnDestroy {
 		this.wsMessages$ = new Subject<IWsMessage<any>>();
 
 		this.reconnectInterval = wsConfig.reconnectInterval || 5000; // pause between connections
-		this.reconnectAttempts = wsConfig.reconnectAttempts || 10; // number of connection attempts
+		this.reconnectAttempts = wsConfig.reconnectAttempts || 100; // number of connection attempts
 
 		this.config = {
 			url: wsConfig.url,
@@ -137,7 +137,7 @@ export class WebsocketService implements IWebsocketService, OnDestroy {
 	* */
 	public send(event: string, data: any = {}): void {
 		if (event && this.isConnected) {
-			this.websocket$.next(<any>JSON.stringify({ event, data }));
+			this.websocket$.next({ event, data } as any);
 		} else {
 			console.error('Send error!');
 		}
