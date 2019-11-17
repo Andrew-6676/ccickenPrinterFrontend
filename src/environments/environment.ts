@@ -4,7 +4,7 @@
 
 export const environment = {
 	production: false,
-	ws: 'ws://localhost:8888'
+	ws: 'ws://' + location.hostname + ':8888'
 };
 
 /*

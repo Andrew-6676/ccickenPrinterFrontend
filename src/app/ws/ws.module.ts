@@ -17,6 +17,7 @@ import { WebSocketConfig }  from './ws.interfaces';
 })
 export class WebsocketModule {
 	public static config(wsConfig: WebSocketConfig): ModuleWithProviders {
+		console.log(wsConfig);
 		return {
 			ngModule: WebsocketModule,
 			providers: [{provide: config, useValue: wsConfig}]
