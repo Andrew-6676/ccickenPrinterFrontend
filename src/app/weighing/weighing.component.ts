@@ -270,6 +270,9 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	}
 
 	/* --------------------------------------------------------------------------- */
+	/**
+	 * Выбор шаблона для печати
+	 */
 	selectTemplate() {
 		const dialogRef = this.dialog.open(SelectDialogComponent, {
 			data: this.templatesService.templates
@@ -280,6 +283,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 				result => {
 					this.templatesService.currentTemplate = result;
 					localStorage.setItem('template', JSON.stringify(result));
+					this.prepareDataForPrint();
 				});
 	}
 
