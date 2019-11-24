@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class WeighingService {
 
+	weighingLog = [];
 	scales = {
 		connected: false,
 		message: ' - неизвестно - ',

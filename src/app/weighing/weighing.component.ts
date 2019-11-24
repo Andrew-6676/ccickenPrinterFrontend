@@ -21,6 +21,7 @@ import { WebsocketService }       from '../ws/ws.service';
 import { Observable, Subject }    from 'rxjs';
 import { WS }                     from '../ws.events';
 import { subscribeOn, takeUntil } from 'rxjs/operators';
+import { ConfirmDialogComponent } from '../dialog/dialog-confirm.component';
 
 @Component({
 	selector: 'app-weighing',
@@ -133,6 +134,13 @@ export class WeighingComponent implements OnInit, OnDestroy {
 				return;
 			}
 			if (this.currentproduct) {
+				this.weighingService.weighingLog.push(
+					{
+						time: new Date(),
+						weight,
+						tare: this.weighingService.currentTare,
+					}
+				);
 				this.weighingService.totals.packs++;
 				this.weighingService.totals.netto += weight;
 				this.weighingService.totals.netto = Math.round(this.weighingService.totals.netto * 1000) / 1000;
@@ -187,7 +195,11 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		fcDate.setValue(new Date(date.setDate(date.getDate() + operation)));
 		this.prepareDataForPrint();
 	}
-
+	/* --------------------------------------------------------------------------- */
+	changePalletNum(operation: number) {
+		this.palletNumber += operation;
+		this.prepareDataForPrint();
+	}
 	/* --------------------------------------------------------------------------- */
 
 	NumPress(btn: string) {
@@ -196,7 +208,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 				this.currentPlu = this.currentPlu.substr(0, this.currentPlu.length - 1);
 				break;
 			case 'reset':
-				this.currentPlu = '';
+				this.resetProcess();
 				break;
 			default:
 				this.currentPlu += btn;
@@ -225,6 +237,25 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		this.currentproductId = -1;
 	}
 
+	/* --------------------------------------------------------------------------- */
+	resetProcess() {
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			data: {message: 'Начать взвешивать партию заново?'}
+		});
+
+		dialogRef.afterClosed()
+			.subscribe(
+				result => {
+					if (result) {
+						this.weighingService.weighingLog = [];
+						this.weighingService.totals.packs = 0;
+						this.weighingService.totals.netto = 0;
+						this.weighingService.totals.tare = 0;
+						this.weighingService.totals.brutto = 0;
+					}
+				},
+			);
+	}
 	/* --------------------------------------------------------------------------- */
 	getUser() {
 		const dialogRef = this.dialog.open(SelectDialogComponent, {
@@ -282,13 +313,25 @@ export class WeighingComponent implements OnInit, OnDestroy {
 			}).subscribe();
 	}
 	/* --------------------------------------------------------------------------- */
+	showWeighingLog() {
+		let message = '';
+		for (const l of this.weighingService.weighingLog) {
+			message += l.time.toISOString().substr(-13, 8) + ' - ' + l.weight + '\n';
+		}
+		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			data: {message: `<pre>${message}</pre>`}
+		});
+
+		dialogRef.afterClosed().subscribe();
+	}
+	/* --------------------------------------------------------------------------- */
 	printTotal() {
 		const date2: Date = new Date(this.expirationDate.value);
 		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
 		console.log(this.weighingService.totals.netto);
 		const code128: string = this.currentproduct.code128_prefix
-			+ (this.currentproduct.id + '').replace('.','').padStart(5, '0')
-			+ (this.weighingService.totals.netto + '').padStart(5, '0')
+			+ (this.currentproduct.id + '').padStart(5, '0')
+			+ (this.weighingService.totals.netto + '').replace('.','').padStart(5, '0')
 			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1');
 
 		this.weighingService.printTotal({
@@ -305,10 +348,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 			date3: this.format_date(date2),
 		}).subscribe(
 			resp => {
-				this.weighingService.totals.packs = 0;
-				this.weighingService.totals.netto = 0;
-				this.weighingService.totals.tare = 0;
-				this.weighingService.totals.brutto = 0;
+				this.resetProcess();
 			}
 		);
 	}

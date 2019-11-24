@@ -48,7 +48,8 @@
   color: #0077ff;
 }
 .red-btn {
-  color: red;
+  color: white;
+  background: red;
 }
 .orange-btn {
   color: orange;
@@ -126,4 +127,14 @@
   button:not([disabled]) {
     border: 4px solid orange;
   }
+}
+
+fieldset {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+fieldset[disabled] button {
+  background: #bcbcbc;
 }

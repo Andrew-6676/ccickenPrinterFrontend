@@ -12,15 +12,17 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 		}
 	`],
 	template: `
-        <div mat-dialog-content>
+        <div mat-dialog-content *ngIf="!data?.message">
             Удалить '<b>{{ data.name }}</b>'?
+        </div>
+        <div mat-dialog-content *ngIf="data.message" [innerHTML]="data.message">
         </div>
         <div mat-dialog-actions>
             <button mat-stroked-button color="accent" (click)="onUserClick(false)">
                 отмена
             </button>
             <button mat-raised-button color="warn" (click)="onUserClick(true)">
-                Удалить
+                OK
             </button>
         </div>
 	`,

@@ -1,10 +1,10 @@
 <div class="status">
 	<br>
 	<mat-chip-list>
-		<mat-chip class="w40"
-				  [ngClass]="{ok: serverConnected, error: !serverConnected}"
-				  selected>Сервер: {{ serverConnected ? 'Ok' : 'Disconnected' }}</mat-chip>
-		<mat-chip class="w40"
+<!--		<mat-chip class="w40"-->
+<!--				  [ngClass]="{ok: serverConnected, error: !serverConnected}"-->
+<!--				  selected>Сервер: {{ serverConnected ? 'Ok' : 'Disconnected' }}</mat-chip>-->
+		<mat-chip class="w80"
 				  [ngClass]="{ok: weighingService.scales.connected, error: !weighingService.scales.connected}"
 				  selected>Весы: {{ weighingService.scales.message }}</mat-chip>
 		<br>
@@ -108,7 +108,7 @@
 		<fa-icon [icon]="faIcons.total"></fa-icon>
 		Итог
 	</button>
-	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser">
+	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="true">
 		<fa-icon [icon]="faIcons.print"></fa-icon>
 		Печать <br>
 		итога по поддону
@@ -127,66 +127,67 @@
 			</mat-select>
 	</mat-form-field>
 
-	<div class="inputs">
-		<div class="left">
-			<button mat-fab color="primary" (click)="changeDate(partyDate, -1)">-</button>
-			&nbsp;
-			<mat-form-field>
-				<input matInput [matDatepicker]="picker" (click)="picker.open()" placeholder="Дата партии" [formControl]="partyDate">
-				<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-				<mat-datepicker #picker touchUi></mat-datepicker>
-			</mat-form-field>
-			&nbsp;
-			<button mat-fab color="primary" (click)="changeDate(partyDate, 1)">+</button>
-			<br>
-			<button mat-fab color="primary" (click)="palletNumber = palletNumber-1;">-</button>
-			&nbsp;
-			<mat-form-field>
-				<input matInput
-					   placeholder="Номер поддона"
-					   [(ngModel)]="palletNumber"
-					   type="number">
-			</mat-form-field>
-			&nbsp;
-			<button mat-fab color="primary" (click)="palletNumber = palletNumber+1;">+</button>
+	<fieldset [disabled]="!currentproduct">
+		<div class="inputs">
+			<div class="left">
+				<button mat-fab color="primary" (click)="changeDate(partyDate, -1)">-</button>
+				&nbsp;
+				<mat-form-field>
+					<input matInput [matDatepicker]="picker" (click)="picker.open()" placeholder="Дата партии" [formControl]="partyDate">
+					<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+					<mat-datepicker #picker touchUi></mat-datepicker>
+				</mat-form-field>
+				&nbsp;
+				<button mat-fab color="primary" (click)="changeDate(partyDate, 1)">+</button>
+				<br>
+				<button mat-fab color="primary" (click)="changePalletNum(-1)">-</button>
+				&nbsp;
+				<mat-form-field>
+					<input matInput
+						   placeholder="Номер поддона"
+						   [(ngModel)]="palletNumber"
+						   type="number">
+				</mat-form-field>
+				&nbsp;
+				<button mat-fab color="primary" (click)="changePalletNum(1)">+</button>
+			</div>
+
+			<div class="right">
+				<button mat-fab color="primary" (click)="changeDate(expirationDate, -1)">-</button>
+				&nbsp;
+				<mat-form-field>
+					<input matInput [matDatepicker]="picker2" (click)="picker2.open()" placeholder="Дата изготовления" [formControl]="expirationDate">
+					<mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+					<mat-datepicker #picker2 touchUi></mat-datepicker>
+				</mat-form-field>
+				&nbsp;
+				<button mat-fab color="primary" (click)="changeDate(expirationDate, 1)">+</button>
+				<br>
+				<button mat-fab color="primary" (click)="packsPerBox = packsPerBox - 1">-</button>
+				&nbsp;
+				<mat-form-field>
+					<input matInput
+						   placeholder="Упаковок в коробке"
+						   [(ngModel)]="packsPerBox"
+						   type="number">
+				</mat-form-field>
+				&nbsp;
+				<button mat-fab color="primary" (click)="packsPerBox = packsPerBox + 1">+</button>
+
+			</div>
 		</div>
-
-		<div class="right">
-			<button mat-fab color="primary" (click)="changeDate(expirationDate, -1)">-</button>
-			&nbsp;
-			<mat-form-field>
-				<input matInput [matDatepicker]="picker2" (click)="picker2.open()" placeholder="Дата изготовления" [formControl]="expirationDate">
-				<mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-				<mat-datepicker #picker2 touchUi></mat-datepicker>
-			</mat-form-field>
-			&nbsp;
-			<button mat-fab color="primary" (click)="changeDate(expirationDate, 1)">+</button>
-			<br>
-			<button mat-fab color="primary" (click)="packsPerBox = packsPerBox - 1">-</button>
-			&nbsp;
-			<mat-form-field>
-				<input matInput
-					   placeholder="Упаковок в коробке"
-					   [(ngModel)]="packsPerBox"
-					   type="number">
-			</mat-form-field>
-			&nbsp;
-			<button mat-fab color="primary" (click)="packsPerBox = packsPerBox + 1">+</button>
-
-		</div>
-	</div>
-
+	</fieldset>
 	<hr>
 
 	<table class="table-totals">
 		<tr>
-			<th>Упаковок, шт</th>
+			<th (click)="showWeighingLog()">Упаковок, шт</th>
 			<th>Вес продукции, кг</th>
 			<th>Вес тары, кг</th>
 			<th>Вес партии, кг</th>
 		</tr>
 		<tr>
-			<td>{{ weighingService.totals.packs }}</td>
+			<td (click)="showWeighingLog()">{{ weighingService.totals.packs }}</td>
 			<td>{{ weighingService.totals.netto }}</td>
 			<td>{{ weighingService.totals.tare }}</td>
 			<td>{{ weighingService.totals.brutto }}</td>
