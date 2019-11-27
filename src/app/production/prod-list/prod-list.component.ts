@@ -56,7 +56,7 @@ export class ProdListComponent implements OnInit {
 
 	del(row: ProductionModel) {
 		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-			data: row.name,
+			data: row,
 		});
 
 		dialogRef.afterClosed()
