@@ -31,9 +31,9 @@
 			[disabled]="!userService.currentUser">3</button>
 	<button mat-raised-button class="weiging-btn srv-btn plu-btn" (click)="getProduct()"
 			[disabled]="!userService.currentUser">PLU</button>
-	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser"
+	<button mat-raised-button class="weiging-btn srv-btn tare-btn" [disabled]="!userService.currentUser"
 			[ngClass]="{tare_active: getTareMode}"
-			(click)="getTare()">
+			(click)="tareModeToggle()">
 		<fa-icon [icon]="faIcons.tare"></fa-icon>
 		Тара
 		<br>
@@ -108,10 +108,9 @@
 		<fa-icon [icon]="faIcons.total"></fa-icon>
 		Итог
 	</button>
-	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="true">
+	<button mat-raised-button class="weiging-btn srv-btn" [ngClass]="{printing: printInProgress}" [disabled]="true">
 		<fa-icon [icon]="faIcons.print"></fa-icon>
-		Печать <br>
-		итога по поддону
+		Идёт печать! <br>
 	</button>
 
 </div>
@@ -133,23 +132,26 @@
 				<button mat-fab color="primary" (click)="changeDate(partyDate, -1)">-</button>
 				&nbsp;
 				<mat-form-field>
-					<input matInput [matDatepicker]="picker" (click)="picker.open()" placeholder="Дата партии" [formControl]="partyDate">
+					<input matInput [matDatepicker]="picker"
+						   (click)="picker.open()"
+						   placeholder="Дата партии"
+						   [formControl]="partyDate">
 					<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
 					<mat-datepicker #picker touchUi></mat-datepicker>
 				</mat-form-field>
 				&nbsp;
 				<button mat-fab color="primary" (click)="changeDate(partyDate, 1)">+</button>
 				<br>
-				<button mat-fab color="primary" (click)="changePalletNum(-1)">-</button>
-				&nbsp;
-				<mat-form-field>
-					<input matInput
-						   placeholder="Номер поддона"
-						   [(ngModel)]="palletNumber"
-						   type="number">
-				</mat-form-field>
-				&nbsp;
-				<button mat-fab color="primary" (click)="changePalletNum(1)">+</button>
+<!--				<button mat-fab color="primary" (click)="changePalletNum(-1)">-</button>-->
+<!--				&nbsp;-->
+<!--				<mat-form-field>-->
+<!--					<input matInput-->
+<!--						   placeholder="Номер поддона"-->
+<!--						   [(ngModel)]="palletNumber"-->
+<!--						   type="number">-->
+<!--				</mat-form-field>-->
+<!--				&nbsp;-->
+<!--				<button mat-fab color="primary" (click)="changePalletNum(1)">+</button>-->
 			</div>
 
 			<div class="right">
@@ -163,16 +165,16 @@
 				&nbsp;
 				<button mat-fab color="primary" (click)="changeDate(expirationDate, 1)">+</button>
 				<br>
-				<button mat-fab color="primary" (click)="packsPerBox = packsPerBox - 1">-</button>
-				&nbsp;
-				<mat-form-field>
-					<input matInput
-						   placeholder="Упаковок в коробке"
-						   [(ngModel)]="packsPerBox"
-						   type="number">
-				</mat-form-field>
-				&nbsp;
-				<button mat-fab color="primary" (click)="packsPerBox = packsPerBox + 1">+</button>
+<!--				<button mat-fab color="primary" (click)="packsPerBox = packsPerBox - 1">-</button>-->
+<!--				&nbsp;-->
+<!--				<mat-form-field>-->
+<!--					<input matInput-->
+<!--						   placeholder="Упаковок в коробке"-->
+<!--						   [(ngModel)]="packsPerBox"-->
+<!--						   type="number">-->
+<!--				</mat-form-field>-->
+<!--				&nbsp;-->
+<!--				<button mat-fab color="primary" (click)="packsPerBox = packsPerBox + 1">+</button>-->
 
 			</div>
 		</div>
@@ -198,12 +200,12 @@
 
 </div>
 
-<hr>
+<!--<hr>-->
 
-<nav class="menu">
-	<ul>
-		<li><a routerLink="/production/list">Продукция</a></li>
-		<li><a routerLink="/users">Пользователи</a></li>
-		<li><a routerLink="/templates">Шаблоны</a></li>
-	</ul>
-</nav>
+<!--<nav class="menu">-->
+<!--	<ul>-->
+<!--		<li><a routerLink="/production/list">Продукция</a></li>-->
+<!--		<li><a routerLink="/users">Пользователи</a></li>-->
+<!--		<li><a routerLink="/templates">Шаблоны</a></li>-->
+<!--	</ul>-->
+<!--</nav>-->

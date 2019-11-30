@@ -28,7 +28,7 @@ import { TemplatesService }       from './services/templates.service';
 import { ConfirmDialogComponent } from './dialog/dialog-confirm.component';
 import { ParamsService }          from './services/paramsService';
 import { WebsocketModule }        from './ws/ws.module';
-import { environment }            from '../environments/environment';
+import { NewcodeDialogComponent } from './dialog/dialog-newcode.component';
 
 @NgModule({
 	declarations: [
@@ -40,10 +40,12 @@ import { environment }            from '../environments/environment';
 		TemplatesComponent,
 		ConfirmDialogComponent,
 		SelectDialogComponent,
+		NewcodeDialogComponent,
 	],
 	entryComponents: [
 		ConfirmDialogComponent,
 		SelectDialogComponent,
+		NewcodeDialogComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -62,7 +64,7 @@ import { environment }            from '../environments/environment';
 		MatChipsModule,
 		MatListModule,
 		MatDialogModule,
-		WebsocketModule
+		WebsocketModule,
 	],
 	providers: [
 		ProductionService,

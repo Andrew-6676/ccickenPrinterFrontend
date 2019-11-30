@@ -37,7 +37,18 @@ export class ProdListComponent implements OnInit {
 	}
 
 	print() {
-		console.log('print');
+		console.log('print ');
+		this.productService
+			.printList()
+			.subscribe(
+				data => {
+					const a = document.createElement('a');
+					const file = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+					a.href = URL.createObjectURL(file);
+					a.download = 'prod.xlsx';
+					a.click();
+				}
+			);
 	}
 
 	refresh(noCache = false) {

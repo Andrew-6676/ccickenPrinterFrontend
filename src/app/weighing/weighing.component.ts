@@ -57,10 +57,12 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	expirationDate = new FormControl(new Date());
 
 	getTareMode = false;
+	printInProgress = false;
 
 	private messages$: Observable<any>;
 	private weight$: Observable<any>;
 	private scales$: Observable<any>;
+	private print$: Observable<any>;
 
 	constructor(
 		public productService: ProductionService,
@@ -98,27 +100,36 @@ export class WeighingComponent implements OnInit, OnDestroy {
 			.getTemplates()
 			.subscribe();
 
-		const elem: any = document.documentElement;
-		if (elem.requestFullscreen) {
-			elem.requestFullscreen();
-		} else if (elem.mozRequestFullScreen) {
-			elem.mozRequestFullScreen();        /* Firefox */
-		} else if (elem.webkitRequestFullscreen) {
-			elem.webkitRequestFullscreen();     /* Chrome, Safari and Opera */
-		} else if (elem.msRequestFullscreen) {
-			elem.msRequestFullscreen();         /* IE/Edge */
-		}
+		// const elem: any = document.documentElement;
+		// if (elem.requestFullscreen) {
+		// 	elem.requestFullscreen();
+		// } else if (elem.mozRequestFullScreen) {
+		// 	elem.mozRequestFullScreen();        /* Firefox */
+		// } else if (elem.webkitRequestFullscreen) {
+		// 	elem.webkitRequestFullscreen();     /* Chrome, Safari and Opera */
+		// } else if (elem.msRequestFullscreen) {
+		// 	elem.msRequestFullscreen();         /* IE/Edge */
+		// }
 
 		// WS messages
 		this.messages$ = this.wsService.on<any>(WS.ON.MESSAGES);
 		this.weight$ = this.wsService.on<any>(WS.ON.WEIGHT);
 		this.scales$ = this.wsService.on<any>(WS.ON.SCALES);
+		this.print$ = this.wsService.on<any>(WS.ON.PRINT);
 
 		this.messages$.pipe(
 				takeUntil(this.destroy$),
 			).subscribe(resp => {
 			console.log('WEBSOKET [message]:', resp);
 		});
+
+		this.print$.pipe(
+			takeUntil(this.destroy$),
+		).subscribe(resp => {
+			console.log('WEBSOKET [print]:', resp);
+			this.printInProgress = resp === '"start"';
+		});
+
 		this.weight$.pipe(
 			takeUntil(this.destroy$),
 		).subscribe((weight) => {
@@ -141,6 +152,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 						tare: this.weighingService.currentTare,
 					}
 				);
+				weight -= this.weighingService.currentTare;
 				this.weighingService.totals.packs++;
 				this.weighingService.totals.netto += weight;
 				this.weighingService.totals.netto = Math.round(this.weighingService.totals.netto * 1000) / 1000;
@@ -185,9 +197,9 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	}
 
 	/* --------------------------------------------------------------------------- */
-	getTare() {
-		this.getTareMode = true;
-		this.wsService.send(WS.SEND.GET_TARE, '0');
+	tareModeToggle() {
+		this.getTareMode = !this.getTareMode;
+		this.wsService.send(WS.SEND.GET_TARE, this.getTareMode);
 	}
 	/* --------------------------------------------------------------------------- */
 	changeDate(fcDate: FormControl, operation: number) {

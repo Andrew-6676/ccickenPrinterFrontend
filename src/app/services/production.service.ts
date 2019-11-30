@@ -103,6 +103,10 @@ export class ProductionService {
 			);
 	}
 
+	printList() {
+		return this.http.get('/api/production/excel', { responseType: 'blob'} );
+	}
+
 	save(prod: ProductionModel) {
 		if (prod.id < 0) {
 			return this.http.post('/api/production', prod);

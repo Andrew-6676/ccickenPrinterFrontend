@@ -2,9 +2,12 @@ import { Component, OnInit }                                         from '@angu
 import { ActivatedRoute, Router }                                    from '@angular/router';
 import { faSave, faTrashAlt, faUserEdit, faUserPlus, faWindowClose } from '@fortawesome/free-solid-svg-icons';
 
-import { ProductionModel }   from '../production.model';
-import { ProductionService } from '../../services/production.service';
-import { ParamsService }     from '../../services/paramsService';
+import { ProductionModel }        from '../production.model';
+import { ProductionService }      from '../../services/production.service';
+import { ParamsService }          from '../../services/paramsService';
+import { MatDialog }              from '@angular/material';
+import { ConfirmDialogComponent } from '../../dialog/dialog-confirm.component';
+import { NewcodeDialogComponent } from '../../dialog/dialog-newcode.component';
 
 @Component({
 	selector: 'app-prod-form',
@@ -26,6 +29,7 @@ export class ProdFormComponent implements OnInit {
 		private route: ActivatedRoute,
 		public productService: ProductionService,
 		public paramsService: ParamsService,
+		public dialog: MatDialog,
 	) {
 		this.prodItem = {
 			id: -1,
@@ -47,13 +51,14 @@ export class ProdFormComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		const dialogRef = this.dialog.open(NewcodeDialogComponent);
+
 		if (this.route.snapshot.params.id < 0) {
 			this.paramsService
 				.getParams()
 				.subscribe(
 					params => {
-						this.productService
-							.getNewId()
+						dialogRef.afterClosed()
 							.subscribe(
 								newId => {
 									this.prodItem.bar_code = this.generaeBarCode(params, newId);
