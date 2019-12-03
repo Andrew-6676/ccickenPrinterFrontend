@@ -5,7 +5,7 @@ import { FontAwesomeModule }                from '@fortawesome/angular-fontaweso
 import {
 	MAT_DATE_LOCALE,
 	MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule,
-	MatDatepickerModule, MatDialogModule,
+	MatDatepickerModule, MatDialogModule, MatIconModule,
 	MatInputModule, MatListModule,
 	MatNativeDateModule, MatRadioModule,
 	MatSelectModule
@@ -30,6 +30,7 @@ import { ParamsService }          from './services/paramsService';
 import { WebsocketModule }        from './ws/ws.module';
 import { NewcodeDialogComponent } from './dialog/dialog-newcode.component';
 import { NgxUploaderModule }      from 'ngx-uploader';
+import { LogDialogComponent }     from './dialog/dialog-log.component';
 
 @NgModule({
 	declarations: [
@@ -40,11 +41,13 @@ import { NgxUploaderModule }      from 'ngx-uploader';
 		UsersComponent,
 		TemplatesComponent,
 		ConfirmDialogComponent,
+		LogDialogComponent,
 		SelectDialogComponent,
 		NewcodeDialogComponent,
 	],
 	entryComponents: [
 		ConfirmDialogComponent,
+		LogDialogComponent,
 		SelectDialogComponent,
 		NewcodeDialogComponent,
 	],
@@ -69,6 +72,7 @@ import { NgxUploaderModule }      from 'ngx-uploader';
 		NgxUploaderModule,
 		MatCheckboxModule,
 		MatRadioModule,
+		MatIconModule,
 	],
 	providers: [
 		ProductionService,

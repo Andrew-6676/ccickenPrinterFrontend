@@ -22,6 +22,7 @@ import { Observable, Subject }    from 'rxjs';
 import { WS }                     from '../ws.events';
 import { subscribeOn, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent } from '../dialog/dialog-confirm.component';
+import { LogDialogComponent }     from '../dialog/dialog-log.component';
 
 @Component({
 	selector: 'app-weighing',
@@ -147,6 +148,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 			if (this.currentproduct) {
 				this.weighingService.weighingLog.push(
 					{
+						id: this.weighingService.weighingLog.length,
 						time: new Date(),
 						weight,
 						tare: this.weighingService.currentTare,
@@ -330,15 +332,27 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	}
 	/* --------------------------------------------------------------------------- */
 	showWeighingLog() {
-		let message = '';
-		for (const l of this.weighingService.weighingLog) {
-			message += l.time.toISOString().substr(-13, 8) + ' - ' + l.weight + '\n';
-		}
-		const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-			data: {message: `<pre>${message}</pre>`}
+		const dialogRef = this.dialog.open(LogDialogComponent, {
+			data: this.weighingService.weighingLog
 		});
 
-		dialogRef.afterClosed().subscribe();
+		dialogRef.afterClosed().subscribe(
+			resp => {
+				if (resp) {
+					for (const l of resp) {
+						this.weighingService.totals.packs -= 1;
+						this.weighingService.totals.netto -= l.weight;
+						this.weighingService.totals.tare -= l.tare;
+						this.weighingService.totals.brutto -= l.tare + l.weight;
+						for (const i in this.weighingService.weighingLog) {
+							if (this.weighingService.weighingLog[i].id === l.id) {
+								this.weighingService.weighingLog.splice(i as any, 1);
+							}
+						}
+					}
+				}
+			}
+		);
 	}
 	/* --------------------------------------------------------------------------- */
 	printTotal() {
