@@ -4,6 +4,12 @@
 			<fa-icon [icon]="faIcons.upload"></fa-icon>
 			Загрузить шаблон
 		</button>
+		&nbsp;
+		<button mat-raised-button color="primary" (click)="refresh(true)">
+			<fa-icon [icon]="faIcons.refresh"></fa-icon>
+			&nbsp;
+			Обновить
+		</button>
 
 		<span style="flex: 1"></span>
 
@@ -20,9 +26,9 @@
 				<mat-list-item role="listitem">
 					[ {{ template.id }} ] -  {{ template.name }}
 					<span style="flex: 1 1 "></span>
-					<a mat-mini-fab href="#" color="warn">
-						<fa-icon [icon]="faIcons.download"></fa-icon>
-					</a>
+					<small>скачать шаблон</small>&nbsp;
+					<a mat-stroked-button color="primary" (click)="getFile(template.id)">основной</a>&nbsp;
+					<a mat-stroked-button color="primary" (click)="getFile(template.id + '_total')">итоговый</a>
 					&nbsp;
 					<button mat-mini-fab (click)="edit(template)" color="primary">
 						<fa-icon [icon]="faIcons.edit"></fa-icon>
@@ -43,16 +49,47 @@
 <br>
 <br>
 <mat-card *ngIf="showForm">
-	<mat-card-content>
-		<mat-form-field class="example-full-width">
-			<input matInput placeholder="Имя" [(ngModel)]="form.name">
-		</mat-form-field>
-		<br>
-	</mat-card-content>
+	<mat-form-field class="example-full-width">
+		<input matInput placeholder="Название шаблона" [(ngModel)]="form.name">
+	</mat-form-field>
+	<br>
+	<label class="upload-button" style="cursor: pointer; color: blue">
+		<input type="file"
+			   style="visibility: hidden; width: 0"
+			   name="template"
+			   multiple
+			   ngFileSelect
+			   [options]="options"
+			   (uploadOutput)="onUploadOutput($event)"
+			   [uploadInput]="uploadInput">
+		Выбрать файл
+	</label>
+
+	<table class="files">
+		<tr>
+			<th>Файл</th>
+			<th>Итоговый</th>
+			<th></th>
+		</tr>
+		<tr *ngFor="let file of files">
+			<td>{{ file.name }}</td>
+			<td>
+				<mat-radio-button class="e xample-margin"
+								  [checked]="metadata[file.id]"
+								  (click)="setTemplate(file.id)">
+				</mat-radio-button>
+			</td>
+			<td><a mat-button color="warn" (click)="removeFile(file.id)">удалить</a></td>
+		</tr>
+	</table>
+
 	<mat-card-actions>
-		<button mat-raised-button color="accent" (click)="save()">
-			<fa-icon [icon]="faIcons.save"></fa-icon>
-			Сохранить
+		<button mat-raised-button color="accent"
+				type="button"
+				class="start-upload-btn"
+				(click)="addTEmplate()"
+				[disabled]="files.length != 2 || form.name==''">
+			Загрузить
 		</button>
 		&nbsp;
 		<button mat-stroked-button color="warn" (click)="cancel()">

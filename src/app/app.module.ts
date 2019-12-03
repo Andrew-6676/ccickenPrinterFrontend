@@ -4,10 +4,10 @@ import { BrowserAnimationsModule }          from '@angular/platform-browser/anim
 import { FontAwesomeModule }                from '@fortawesome/angular-fontawesome';
 import {
 	MAT_DATE_LOCALE,
-	MatButtonModule, MatCardModule, MatChipsModule,
+	MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule,
 	MatDatepickerModule, MatDialogModule,
 	MatInputModule, MatListModule,
-	MatNativeDateModule,
+	MatNativeDateModule, MatRadioModule,
 	MatSelectModule
 } from '@angular/material';
 import { HttpClientModule }                 from '@angular/common/http';
@@ -29,6 +29,7 @@ import { ConfirmDialogComponent } from './dialog/dialog-confirm.component';
 import { ParamsService }          from './services/paramsService';
 import { WebsocketModule }        from './ws/ws.module';
 import { NewcodeDialogComponent } from './dialog/dialog-newcode.component';
+import { NgxUploaderModule }      from 'ngx-uploader';
 
 @NgModule({
 	declarations: [
@@ -65,6 +66,9 @@ import { NewcodeDialogComponent } from './dialog/dialog-newcode.component';
 		MatListModule,
 		MatDialogModule,
 		WebsocketModule,
+		NgxUploaderModule,
+		MatCheckboxModule,
+		MatRadioModule,
 	],
 	providers: [
 		ProductionService,

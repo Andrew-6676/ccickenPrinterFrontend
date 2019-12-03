@@ -34,11 +34,16 @@ export class TemplatesService {
 		}
 	}
 
-	uploadTemplate() {
-		return of(false);
+	addTemplate(template: any) {
+		return this.http.post('/api/print/templates/append', template);
 	}
 
-	deleteTemplate() {
+	downloademplate(id: any) {
+		console.log('111111111111111111111');
+		return this.http.get('/api/print/templates/' + id, { responseType: 'blob'} );
+	}
+
+	uploadTemplate() {
 		return of(false);
 	}
 
