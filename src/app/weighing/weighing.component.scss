@@ -1,8 +1,8 @@
 .status {
-  height:10%;
+  height:7%;
 }
 .plu {
-  border: 1px solid #bcbcbc;
+  //border: 1px solid #bcbcbc;
   position: absolute;
   right: 0;
   top: 0;
@@ -25,7 +25,7 @@
   grid-template-rows: repeat(4, 1fr);
   grid-template-columns: repeat(5, 1fr);
   grid-gap: 10px;
-  height: 55%;
+  height: 58%;
 }
 .footer {
   height: 30%;
@@ -102,10 +102,16 @@
 .right {
   text-align: right;
 }
-
-.table-totals {
-  width: 100%;
-  text-align: center;
+button[mat-fab] {
+  width: 75px;
+  height: 75px;
+}
+.totals {
+  display: flex;
+  justify-content: space-around;
+  .total-item {
+    text-align: center;
+  }
 }
 
 .status {

@@ -181,25 +181,42 @@
 	</fieldset>
 	<hr>
 
-	<table class="table-totals">
-		<tr>
-			<th (click)="showWeighingLog()">Упаковок, шт</th>
-			<th>Вес продукции, кг</th>
-			<th>Вес тары, кг</th>
-			<th>Вес партии, кг</th>
-		</tr>
-		<tr>
-			<td (click)="showWeighingLog()">{{ weighingService.totals.packs }}</td>
-			<td>{{ weighingService.totals.netto }}</td>
-			<td>{{ weighingService.totals.tare }}</td>
-			<td>{{ weighingService.totals.brutto }}</td>
-		</tr>
-	</table>
+	<div class="totals" (click)="showWeighingLog()">
+		<div class="total-item">
+			<div>Упаковок, шт</div>
+			<div>{{ weighingService.totals.packs }}</div>
+		</div>
+		<div class="total-item">
+			<div>Вес продукции, кг</div>
+			<div>{{ weighingService.totals.netto }}</div>
+		</div>
+		<div class="total-item">
+			<div>Вес тары, кг</div>
+			<div>{{ weighingService.totals.tare }}</div>
+		</div>
+		<div class="total-item">
+			<div>Вес партии, кг</div>
+			<div>{{ weighingService.totals.brutto }}</div>
+		</div>
+	</div>
+<!--	<table class="table-totals">-->
+<!--		<tr>-->
+<!--			<th (click)="showWeighingLog()">Упаковок, шт</th>-->
+<!--			<th>Вес продукции, кг</th>-->
+<!--			<th>Вес тары, кг</th>-->
+<!--			<th>Вес партии, кг</th>-->
+<!--		</tr>-->
+<!--		<tr>-->
+<!--			<td (click)="showWeighingLog()">{{ weighingService.totals.packs }}</td>-->
+<!--			<td>{{ weighingService.totals.netto }}</td>-->
+<!--			<td>{{ weighingService.totals.tare }}</td>-->
+<!--			<td>{{ weighingService.totals.brutto }}</td>-->
+<!--		</tr>-->
+<!--	</table>-->
 
 
 
 </div>
-<pre>{{ weighingService.weighingLog | json }}</pre>
 <!--<hr>-->
 
 <!--<nav class="menu">-->

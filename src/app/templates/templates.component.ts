@@ -16,6 +16,8 @@ import { TemplatesService }                                                     
 import { ConfirmDialogComponent }                                                from '../dialog/dialog-confirm.component';
 import { DomSanitizer }                                                          from '@angular/platform-browser';
 import { humanizeBytes, UploaderOptions, UploadFile, UploadInput, UploadOutput } from 'ngx-uploader';
+import { Router }                                                                from '@angular/router';
+import { PasswdDialogComponent }                                                 from '../dialog/dialog-passwd.component';
 
 @Component({
 	selector: 'app-templates',
@@ -23,6 +25,7 @@ import { humanizeBytes, UploaderOptions, UploadFile, UploadInput, UploadOutput }
 	styleUrls: ['./templates.component.scss']
 })
 export class TemplatesComponent implements OnInit {
+	ok = false;
 	options: UploaderOptions = { concurrency: 1, maxUploads: 3 };
 	formData: FormData;
 	files: UploadFile[] = [];
@@ -52,11 +55,23 @@ export class TemplatesComponent implements OnInit {
 	constructor(
 		public templatesService: TemplatesService,
 		public dialog: MatDialog,
+		private router: Router,
 		private sanitizer: DomSanitizer,
 	) {}
 
 	ngOnInit() {
-		this.refresh();
+		const dialogRef = this.dialog.open(PasswdDialogComponent);
+		dialogRef.afterClosed()
+			.subscribe(
+				ok => {
+					if (ok) {
+						this.ok = true;
+						this.refresh();
+					} else {
+						this.router.navigateByUrl('/');
+					}
+				},
+			);
 	}
 
 	edit(template: any) {

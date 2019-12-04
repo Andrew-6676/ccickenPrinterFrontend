@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card *ngIf="ok">
 	<mat-card-title style="display: flex">
 		<button mat-raised-button color="primary" (click)="add()">
 			<fa-icon [icon]="faIcons.upload"></fa-icon>
@@ -14,9 +14,7 @@
 		<span style="flex: 1"></span>
 
 		<a mat-stroked-button color="primary" [routerLink]="['/']">
-			<fa-icon [icon]="faIcons.weight"></fa-icon>
-			&nbsp;
-			К взвешиванию
+			Главное меню
 		</a>
 	</mat-card-title>
 	<mat-card-content>

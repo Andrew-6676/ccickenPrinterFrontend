@@ -5,6 +5,8 @@ import { MatDialog }                                                            
 import { ProductionModel }        from '../production/production.model';
 import { UserService }            from '../services/user.service';
 import { ConfirmDialogComponent } from '../dialog/dialog-confirm.component';
+import { PasswdDialogComponent }  from '../dialog/dialog-passwd.component';
+import { Router }                 from '@angular/router';
 
 @Component({
 	selector: 'app-users',
@@ -12,7 +14,7 @@ import { ConfirmDialogComponent } from '../dialog/dialog-confirm.component';
 	styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-
+	ok = false;
 	users: any[] = [];
 	faIcons = {
 		refresh: faRecycle,
@@ -31,13 +33,25 @@ export class UsersComponent implements OnInit {
 	};
 
 	constructor(
+		private router: Router,
 		public userService: UserService,
 		public dialog: MatDialog
 	) {
 	}
 
 	ngOnInit() {
-		this.refresh();
+		const dialogRef = this.dialog.open(PasswdDialogComponent);
+		dialogRef.afterClosed()
+			.subscribe(
+				ok => {
+					if (ok) {
+						this.ok = true;
+						this.refresh();
+					} else {
+						this.router.navigateByUrl('/');
+					}
+				},
+			);
 	}
 
 	edit(user: any) {

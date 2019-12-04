@@ -31,6 +31,8 @@ import { WebsocketModule }        from './ws/ws.module';
 import { NewcodeDialogComponent } from './dialog/dialog-newcode.component';
 import { NgxUploaderModule }      from 'ngx-uploader';
 import { LogDialogComponent }     from './dialog/dialog-log.component';
+import { StartMenuComponent }     from './start-menu/start-menu.component';
+import { PasswdDialogComponent }  from './dialog/dialog-passwd.component';
 
 @NgModule({
 	declarations: [
@@ -42,12 +44,15 @@ import { LogDialogComponent }     from './dialog/dialog-log.component';
 		TemplatesComponent,
 		ConfirmDialogComponent,
 		LogDialogComponent,
+		PasswdDialogComponent,
 		SelectDialogComponent,
 		NewcodeDialogComponent,
+		StartMenuComponent,
 	],
 	entryComponents: [
 		ConfirmDialogComponent,
 		LogDialogComponent,
+		PasswdDialogComponent,
 		SelectDialogComponent,
 		NewcodeDialogComponent,
 	],

@@ -8,6 +8,8 @@ import {
 import { ConfirmDialogComponent } from '../../dialog/dialog-confirm.component';
 import { ProductionService }      from '../../services/production.service';
 import { ProductionModel }        from '../production.model';
+import { PasswdDialogComponent }  from '../../dialog/dialog-passwd.component';
+import { Router }                 from '@angular/router';
 
 @Component({
 	selector: 'app-prod-list',
@@ -16,7 +18,7 @@ import { ProductionModel }        from '../production.model';
 })
 export class ProdListComponent implements OnInit {
 	production: ProductionModel[] = [];
-
+	ok = false;
 	faIcons = {
 		edit: faEdit,
 		del: faTrashAlt,
@@ -28,12 +30,24 @@ export class ProdListComponent implements OnInit {
 
 	constructor(
 		public dialog: MatDialog,
+		private router: Router,
 		public productService: ProductionService
 	) {
 	}
 
 	ngOnInit() {
-		this.refresh(true);
+		const dialogRef = this.dialog.open(PasswdDialogComponent);
+		dialogRef.afterClosed()
+			.subscribe(
+				ok => {
+					if (ok) {
+						this.ok = true;
+						this.refresh();
+					} else {
+						this.router.navigateByUrl('/');
+					}
+				},
+			);
 	}
 
 	print() {

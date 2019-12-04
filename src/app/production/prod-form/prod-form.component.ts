@@ -51,9 +51,9 @@ export class ProdFormComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		const dialogRef = this.dialog.open(NewcodeDialogComponent);
-
+		console.log('------------->', this.route.snapshot.params.id);
 		if (this.route.snapshot.params.id < 0) {
+			const dialogRef = this.dialog.open(NewcodeDialogComponent);
 			this.paramsService
 				.getParams()
 				.subscribe(
