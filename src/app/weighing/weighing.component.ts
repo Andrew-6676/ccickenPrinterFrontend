@@ -31,6 +31,9 @@ import { LogDialogComponent }     from '../dialog/dialog-log.component';
 })
 export class WeighingComponent implements OnInit, OnDestroy {
 	destroy$: Subject<boolean> = new Subject<boolean>();
+	prnTime: any = '';
+	tmpPrnTime: any;
+
 	faIcons = {
 		user: faUser,
 		weight: faWeight,
@@ -129,6 +132,12 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		).subscribe(resp => {
 			console.log('WEBSOKET [print]:', resp);
 			this.printInProgress = resp === '"start"';
+			if (resp === '"start"') {
+				this.prnTime = '';
+				this.tmpPrnTime = new Date().getTime();
+			} else {
+				this.prnTime = Math.round((new Date().getTime() - this.tmpPrnTime) / 100) / 10 + 'c';
+			}
 		});
 
 		this.weight$.pipe(
