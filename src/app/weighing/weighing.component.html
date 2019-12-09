@@ -137,7 +137,6 @@
 						   (click)="picker.open()"
 						   placeholder="Дата партии"
 						   [formControl]="partyDate">
-					<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
 					<mat-datepicker #picker touchUi></mat-datepicker>
 				</mat-form-field>
 				&nbsp;
@@ -160,23 +159,23 @@
 				&nbsp;
 				<mat-form-field>
 					<input matInput [matDatepicker]="picker2" (click)="picker2.open()" placeholder="Дата изготовления" [formControl]="expirationDate">
-					<mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
 					<mat-datepicker #picker2 touchUi></mat-datepicker>
 				</mat-form-field>
 				&nbsp;
 				<button mat-fab color="primary" (click)="changeDate(expirationDate, 1)">+</button>
 				<br>
-<!--				<button mat-fab color="primary" (click)="packsPerBox = packsPerBox - 1">-</button>-->
-<!--				&nbsp;-->
-<!--				<mat-form-field>-->
-<!--					<input matInput-->
-<!--						   placeholder="Упаковок в коробке"-->
-<!--						   [(ngModel)]="packsPerBox"-->
-<!--						   type="number">-->
-<!--				</mat-form-field>-->
-<!--				&nbsp;-->
-<!--				<button mat-fab color="primary" (click)="packsPerBox = packsPerBox + 1">+</button>-->
-
+			</div>
+			<div>
+				<button mat-fab color="primary" (click)="changePacks(-1)">-</button>
+				&nbsp;
+				<mat-form-field>
+					<input matInput
+						   placeholder="Упаковок в коробке"
+						   [(ngModel)]="packsPerBox"
+						   type="number">
+				</mat-form-field>
+				&nbsp;
+				<button mat-fab color="primary" (click)="changePacks(1)">+</button>
 			</div>
 		</div>
 	</fieldset>

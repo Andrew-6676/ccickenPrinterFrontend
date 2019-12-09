@@ -12,17 +12,17 @@ import {
 	faWindowClose
 }                                from '@fortawesome/free-solid-svg-icons';
 import { ProductionService }     from '../services/production.service';
-import { UserService }            from '../services/user.service';
-import { ProductionModel }        from '../production/production.model';
-import { SelectDialogComponent }  from '../dialog/dialog-select.component';
-import { TemplatesService }       from '../services/templates.service';
-import { WeighingService }        from '../services/weighing.service';
-import { WebsocketService }       from '../ws/ws.service';
-import { Observable, Subject }    from 'rxjs';
-import { WS }                     from '../ws.events';
-import { subscribeOn, takeUntil } from 'rxjs/operators';
-import { ConfirmDialogComponent } from '../dialog/dialog-confirm.component';
-import { LogDialogComponent }     from '../dialog/dialog-log.component';
+import { UserService }                 from '../services/user.service';
+import { ProductionModel }             from '../production/production.model';
+import { SelectDialogComponent }       from '../dialog/dialog-select.component';
+import { TemplatesService }            from '../services/templates.service';
+import { WeighingService }             from '../services/weighing.service';
+import { WebsocketService }            from '../ws/ws.service';
+import { Observable, Subject }         from 'rxjs';
+import { WS }                          from '../ws.events';
+import { subscribeOn, takeUntil, tap } from 'rxjs/operators';
+import { ConfirmDialogComponent }      from '../dialog/dialog-confirm.component';
+import { LogDialogComponent }          from '../dialog/dialog-log.component';
 
 @Component({
 	selector: 'app-weighing',
@@ -81,6 +81,9 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	/* --------------------------------------------------------------------------- */
 
 	ngOnInit() {
+		let  packs: string = localStorage.getItem('packs');
+		packs = packs ? packs : '5';
+		this.packsPerBox = parseInt( packs, 10);
 		this.productService
 			.getProduction()
 			.pipe(
@@ -137,6 +140,10 @@ export class WeighingComponent implements OnInit, OnDestroy {
 				this.tmpPrnTime = new Date().getTime();
 			} else {
 				this.prnTime = Math.round((new Date().getTime() - this.tmpPrnTime) / 100) / 10 + 'c';
+				if (this.packsPerBox === this.weighingService.totals.packs) {
+					// напечатать итог
+					this.printTotal(true);
+				}
 			}
 		});
 
@@ -217,6 +224,11 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		const date: Date = fcDate.value;
 		fcDate.setValue(new Date(date.setDate(date.getDate() + operation)));
 		this.prepareDataForPrint();
+	}
+	/* --------------------------------------------------------------------------- */
+	changePacks(operation: number) {
+		this.packsPerBox += operation;
+		localStorage.setItem('packs', JSON.stringify(this.packsPerBox));
 	}
 	/* --------------------------------------------------------------------------- */
 	changePalletNum(operation: number) {
@@ -364,7 +376,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		);
 	}
 	/* --------------------------------------------------------------------------- */
-	printTotal() {
+	printTotal(autoconfirm = false) {
 		const date2: Date = new Date(this.expirationDate.value);
 		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
 		console.log(this.weighingService.totals.netto);
@@ -372,8 +384,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 			+ (this.currentproduct.id + '').padStart(5, '0')
 			+ (this.weighingService.totals.netto + '').replace('.','').padStart(5, '0')
 			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1');
-
-		this.weighingService.printTotal({
+		const data = {
 			id: this.currentproductId,
 			template: this.templatesService.currentTemplate.id,
 			code128,
@@ -385,9 +396,21 @@ export class WeighingComponent implements OnInit, OnDestroy {
 			date1: this.format_date(this.partyDate.value),
 			date2: this.format_date(this.expirationDate.value),
 			date3: this.format_date(date2),
-		}).subscribe(
+		};
+		if (autoconfirm) {
+			this.weighingService.weighingLog = [];
+			this.weighingService.totals.packs = 0;
+			this.weighingService.totals.netto = 0;
+			this.weighingService.totals.tare = 0;
+			this.weighingService.totals.brutto = 0;
+		}
+		this.weighingService.printTotal(data).subscribe(
 			resp => {
-				this.resetProcess();
+				if (autoconfirm) {
+
+				} else {
+					this.resetProcess();
+				}
 			}
 		);
 	}
