@@ -33,6 +33,7 @@ export class ProdFormComponent implements OnInit {
 	) {
 		this.prodItem = {
 			id: -1,
+			new_id: -1,
 			group_name: null,
 			name: null,
 			descr: null,
@@ -53,18 +54,28 @@ export class ProdFormComponent implements OnInit {
 	ngOnInit() {
 		console.log('------------->', this.route.snapshot.params.id);
 		if (this.route.snapshot.params.id < 0) {
-			const dialogRef = this.dialog.open(NewcodeDialogComponent);
+			// const dialogRef = this.dialog.open(NewcodeDialogComponent);
 			this.paramsService
 				.getParams()
 				.subscribe(
 					params => {
-						dialogRef.afterClosed()
+						this.productService
+							.getNewId()
 							.subscribe(
 								newId => {
-									this.prodItem.bar_code = this.generaeBarCode(params, newId);
+									console.log('================> new_id', newId);
+									this.prodItem.new_id = newId;
+									this.prodItem.bar_code = this.generaeBarCode(params, '0');
 									this.prodItem.code128_prefix = params.code128_prefix;
 								}
 							);
+						// dialogRef.afterClosed()
+						// 	.subscribe(
+						// 		newId => {
+						// 			this.prodItem.bar_code = this.generaeBarCode(params, newId);
+						// 			this.prodItem.code128_prefix = params.code128_prefix;
+						// 		}
+						// 	);
 					}
 				);
 		} else {
@@ -80,14 +91,16 @@ export class ProdFormComponent implements OnInit {
 			.subscribe(
 				(resp: any) => {
 					if (resp.status === 'ok') {
-						this.router.navigateByUrl('/production/list');
+						this.router.navigateByUrl('/production/list?np');
+					} else {
+						alert('Ошибка: ' + resp.message);
 					}
 				}
 			);
 	}
 
 	cancel() {
-		this.router.navigateByUrl('/production/list');
+		this.router.navigateByUrl('/production/list?np');
 	}
 
 	generaeBarCode(params, newId): string {

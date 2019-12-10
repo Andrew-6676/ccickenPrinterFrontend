@@ -1,4 +1,7 @@
 <mat-card>
+	<mat-form-field class="full-width" *ngIf="prodItem.id < 0">
+		<input matInput placeholder="PLU" [(ngModel)]="prodItem.new_id">
+	</mat-form-field>
 	<mat-form-field class="full-width">
 		<input matInput placeholder="Наименование [{{ prodItem.id }}]" [(ngModel)]="prodItem.group_name">
 	</mat-form-field>
@@ -44,7 +47,7 @@
 			<input matInput placeholder="СТБ" [(ngModel)]="prodItem.STB">
 		</mat-form-field>
 		<mat-form-field class="quart-width">
-			<input matInput placeholder="EAN-13 штрихкод" [(ngModel)]="prodItem.bar_code" [disabled]="true">
+			<input matInput placeholder="EAN-13 штрихкод" [(ngModel)]="prodItem.bar_code" [disabled]="false">
 		</mat-form-field>
 		<mat-form-field class="quart-width">
 			<input matInput placeholder="Префикс code128" [(ngModel)]="prodItem.code128_prefix">

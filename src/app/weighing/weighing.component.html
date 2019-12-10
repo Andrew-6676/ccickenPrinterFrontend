@@ -10,7 +10,7 @@
 		<br>
 		<mat-chip color="primary" selected class="w80"
 				  [color]="currentproduct ? 'primary' : 'accent'">
-			Выбранный продукт: &nbsp; <b>[{{currentproduct?.id}}]</b>&nbsp;-&nbsp;{{ currentproduct?.name }}
+			Выбранный продукт: &nbsp; <b>[{{currentproduct?.id}}]</b>&nbsp;-&nbsp;{{ currentproduct?.group_name }} - {{ currentproduct?.name }}
 		</mat-chip>
 	</mat-chip-list>
 
@@ -123,7 +123,7 @@
 	<mat-form-field class="full-width">
 		<mat-label>Продукт</mat-label>
 			<mat-select placeholder="Выберите продукт" [(value)]="currentproductId" (selectionChange)="prodSelect($event)">
-				<mat-option *ngFor="let p of production" [value]="p.id">[{{ p.id }}] - {{ p.name }}</mat-option>
+				<mat-option *ngFor="let p of production" [value]="p.id">[{{ p.id }}] - {{ p.group_name }} - {{ p.name }}</mat-option>
 			</mat-select>
 	</mat-form-field>
 

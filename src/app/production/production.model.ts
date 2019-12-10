@@ -1,5 +1,6 @@
 export interface ProductionModel {
 	id: number;
+	new_id: number;
 	group_name: string;
 	name: string;
 	descr: string;

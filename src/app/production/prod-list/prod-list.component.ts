@@ -5,11 +5,12 @@ import {
 	faTrashAlt, faWeight,
 }                            from '@fortawesome/free-solid-svg-icons';
 
-import { ConfirmDialogComponent } from '../../dialog/dialog-confirm.component';
-import { ProductionService }      from '../../services/production.service';
-import { ProductionModel }        from '../production.model';
-import { PasswdDialogComponent }  from '../../dialog/dialog-passwd.component';
-import { Router }                 from '@angular/router';
+import { ConfirmDialogComponent }                                  from '../../dialog/dialog-confirm.component';
+import { ProductionService }                                       from '../../services/production.service';
+import { ProductionModel }                                         from '../production.model';
+import { PasswdDialogComponent }                                   from '../../dialog/dialog-passwd.component';
+import { ActivatedRoute, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
+import { filter, pairwise }                                        from 'rxjs/operators';
 
 @Component({
 	selector: 'app-prod-list',
@@ -31,23 +32,30 @@ export class ProdListComponent implements OnInit {
 	constructor(
 		public dialog: MatDialog,
 		private router: Router,
+		private route: ActivatedRoute,
 		public productService: ProductionService
 	) {
 	}
 
 	ngOnInit() {
-		const dialogRef = this.dialog.open(PasswdDialogComponent);
-		dialogRef.afterClosed()
-			.subscribe(
-				ok => {
-					if (ok) {
-						this.ok = true;
-						this.refresh();
-					} else {
-						this.router.navigateByUrl('/');
-					}
-				},
-			);
+		if (!this.route.snapshot.queryParams.hasOwnProperty('np')) {
+			const dialogRef = this.dialog.open(PasswdDialogComponent);
+			console.log(this.router);
+			dialogRef.afterClosed()
+				.subscribe(
+					ok => {
+						if (ok) {
+							this.ok = true;
+							this.refresh();
+						} else {
+							this.router.navigateByUrl('/');
+						}
+					},
+				);
+		} else {
+			this.ok = true;
+			this.refresh();
+		}
 	}
 
 	print() {
