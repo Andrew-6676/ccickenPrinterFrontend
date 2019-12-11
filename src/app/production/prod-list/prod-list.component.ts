@@ -54,7 +54,7 @@ export class ProdListComponent implements OnInit {
 				);
 		} else {
 			this.ok = true;
-			this.refresh();
+			this.refresh(true);
 		}
 	}
 

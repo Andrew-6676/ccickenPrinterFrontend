@@ -335,9 +335,10 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
 
 		const code128: string = this.currentproduct.code128_prefix
-			+ ((this.currentproduct.id + '').padStart(5, '0'))
+			+ ((this.currentproduct.bar_code + '').substr(7, 5))
 			+ '-----'
-			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1');
+			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
+			+ '1';
 
 		this.weighingService.preparePrintData({
 				id: this.currentproductId,
@@ -420,9 +421,10 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
 
 		const code128: string = this.currentproduct.code128_prefix
-			+ ((this.currentproduct.id + '').padStart(5, '0'))
+			+ ((this.currentproduct.bar_code + '').substr(7, 5))
 			+ (weight + '').replace('.', '').padStart(5, '0')
-			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1');
+			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
+			+ '1';
 
 		this.weighingService
 			.print({
