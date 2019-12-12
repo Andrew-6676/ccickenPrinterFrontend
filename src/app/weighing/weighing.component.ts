@@ -62,6 +62,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 
 	getTareMode = false;
 	printInProgress = false;
+	printTotals = false;
 
 	private messages$: Observable<any>;
 	private weight$: Observable<any>;
@@ -127,23 +128,37 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		this.messages$.pipe(
 				takeUntil(this.destroy$),
 			).subscribe(resp => {
-			console.log('WEBSOKET [message]:', resp);
+				resp = JSON.parse(resp);
+				console.log('WEBSOKET [message]:', resp.message);
 		});
 
 		this.print$.pipe(
 			takeUntil(this.destroy$),
 		).subscribe(resp => {
 			console.log('WEBSOKET [print]:', resp);
-			this.printInProgress = resp === '"start"';
-			if (resp === '"start"') {
-				this.prnTime = '';
-				this.tmpPrnTime = new Date().getTime();
-			} else {
-				this.prnTime = Math.round((new Date().getTime() - this.tmpPrnTime) / 100) / 10 + 'c';
-				if (this.packsPerBox === this.weighingService.totals.packs) {
+			switch (resp) {
+				case '"start totals"':
+					this.printTotals = true;
+					break;
+				case '"end totals"':
+					this.printTotals = false;
+					break;
+				case '"start"':
+					this.printInProgress = true;
+					this.prnTime = '';
+					this.tmpPrnTime = new Date().getTime();
 					// напечатать итог
-					this.printTotal(true);
-				}
+					if (this.packsPerBox === this.weighingService.totals.packs) {
+						setTimeout(() => {
+							console.log('start total: ', new Date());
+							this.printTotal(true);
+						}, 0);
+					}
+					break;
+				case '"end"':
+					this.printInProgress = false;
+					this.prnTime = Math.round((new Date().getTime() - this.tmpPrnTime) / 100) / 10 + 'c';
+					break;
 			}
 		});
 
@@ -378,13 +393,17 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	}
 	/* --------------------------------------------------------------------------- */
 	printTotal(autoconfirm = false) {
+		if (autoconfirm) {
+			console.log('AUTO PRINT TOTAL');
+		}
 		const date2: Date = new Date(this.expirationDate.value);
 		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
 		console.log(this.weighingService.totals.netto);
 		const code128: string = this.currentproduct.code128_prefix
-			+ (this.currentproduct.id + '').padStart(5, '0')
+			+ ((this.currentproduct.bar_code + '').substr(7, 5))
 			+ (this.weighingService.totals.netto + '').replace('.','').padStart(5, '0')
-			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1');
+			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
+			+ '1';
 		const data = {
 			id: this.currentproductId,
 			template: this.templatesService.currentTemplate.id,

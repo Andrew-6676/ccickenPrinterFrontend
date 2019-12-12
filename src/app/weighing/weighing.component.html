@@ -108,7 +108,7 @@
 		<fa-icon [icon]="faIcons.total"></fa-icon>
 		Итог
 	</button>
-	<button mat-raised-button class="weiging-btn srv-btn" [ngClass]="{printing: printInProgress}" [disabled]="true">
+	<button mat-raised-button class="weiging-btn srv-btn" [ngClass]="{printing: printInProgress, printing_totals: printTotals}" [disabled]="true">
 		<fa-icon [icon]="faIcons.print"></fa-icon>
 		Идёт печать! <br>
 		{{ prnTime }}
