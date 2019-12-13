@@ -23,6 +23,7 @@ import { WS }                          from '../ws.events';
 import { subscribeOn, takeUntil, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent }      from '../dialog/dialog-confirm.component';
 import { LogDialogComponent }          from '../dialog/dialog-log.component';
+import { TareDialogComponent }         from '../dialog/dialog-tare.component';
 
 @Component({
 	selector: 'app-weighing',
@@ -85,6 +86,11 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		let  packs: string = localStorage.getItem('packs');
 		packs = packs ? packs : '5';
 		this.packsPerBox = parseInt( packs, 10);
+
+		let tare: string = localStorage.getItem('tare');
+		tare = tare ? tare : '0.01';
+		this.weighingService.currentTare = parseFloat( tare );
+
 		this.productService
 			.getProduction()
 			.pipe(
@@ -231,8 +237,20 @@ export class WeighingComponent implements OnInit, OnDestroy {
 
 	/* --------------------------------------------------------------------------- */
 	tareModeToggle() {
-		this.getTareMode = !this.getTareMode;
-		this.wsService.send(WS.SEND.GET_TARE, this.getTareMode);
+		// this.getTareMode = !this.getTareMode;
+		// this.wsService.send(WS.SEND.GET_TARE, this.getTareMode);
+
+		const dialogRef = this.dialog.open(TareDialogComponent, {data: this.weighingService.currentTare });
+
+		dialogRef.afterClosed()
+			.subscribe(
+				result => {
+					if (result) {
+						this.weighingService.currentTare = result;
+						localStorage.setItem('tare', this.weighingService.currentTare + '');
+					}
+				},
+			);
 	}
 	/* --------------------------------------------------------------------------- */
 	changeDate(fcDate: FormControl, operation: number) {

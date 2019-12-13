@@ -33,6 +33,7 @@ import { NgxUploaderModule }      from 'ngx-uploader';
 import { LogDialogComponent }     from './dialog/dialog-log.component';
 import { StartMenuComponent }     from './start-menu/start-menu.component';
 import { PasswdDialogComponent }  from './dialog/dialog-passwd.component';
+import { TareDialogComponent }    from './dialog/dialog-tare.component';
 
 @NgModule({
 	declarations: [
@@ -47,6 +48,7 @@ import { PasswdDialogComponent }  from './dialog/dialog-passwd.component';
 		PasswdDialogComponent,
 		SelectDialogComponent,
 		NewcodeDialogComponent,
+		TareDialogComponent,
 		StartMenuComponent,
 	],
 	entryComponents: [
@@ -55,6 +57,7 @@ import { PasswdDialogComponent }  from './dialog/dialog-passwd.component';
 		PasswdDialogComponent,
 		SelectDialogComponent,
 		NewcodeDialogComponent,
+		TareDialogComponent,
 	],
 	imports: [
 		BrowserModule,
