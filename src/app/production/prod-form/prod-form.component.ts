@@ -47,6 +47,7 @@ export class ProdFormComponent implements OnInit {
 			expiration_date: null,
 			bar_code: '?',
 			code128_prefix: '?',
+			inner_ean13: null,
 			deleted: null,
 		};
 	}

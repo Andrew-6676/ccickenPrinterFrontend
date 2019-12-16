@@ -14,5 +14,6 @@ export interface ProductionModel {
 	expiration_date: number;
 	bar_code: string;
 	code128_prefix: string;
+	inner_ean13: string;
 	deleted: number;
 }

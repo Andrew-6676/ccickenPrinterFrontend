@@ -114,18 +114,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 			.getTemplates()
 			.subscribe();
 
-		// const elem: any = document.documentElement;
-		// if (elem.requestFullscreen) {
-		// 	elem.requestFullscreen();
-		// } else if (elem.mozRequestFullScreen) {
-		// 	elem.mozRequestFullScreen();        /* Firefox */
-		// } else if (elem.webkitRequestFullscreen) {
-		// 	elem.webkitRequestFullscreen();     /* Chrome, Safari and Opera */
-		// } else if (elem.msRequestFullscreen) {
-		// 	elem.msRequestFullscreen();         /* IE/Edge */
-		// }
-
-		// WS messages
+    	// WS messages
 		this.messages$ = this.wsService.on<any>(WS.ON.MESSAGES);
 		this.weight$ = this.wsService.on<any>(WS.ON.WEIGHT);
 		this.scales$ = this.wsService.on<any>(WS.ON.SCALES);
@@ -326,6 +315,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	}
 	/* --------------------------------------------------------------------------- */
 	getUser() {
+		this.fullScreen();
 		const dialogRef = this.dialog.open(SelectDialogComponent, {
 			data: this.usersList
 		});
@@ -336,7 +326,19 @@ export class WeighingComponent implements OnInit, OnDestroy {
 					this.userService.currentUser = result;
 				});
 	}
-
+	/* --------------------------------------------------------------------------- */
+	fullScreen() {
+		const elem: any = document.documentElement;
+		if (elem.requestFullscreen) {
+			elem.requestFullscreen();
+		} else if (elem.mozRequestFullScreen) {
+			elem.mozRequestFullScreen();        /* Firefox */
+		} else if (elem.webkitRequestFullscreen) {
+			elem.webkitRequestFullscreen();     /* Chrome, Safari and Opera */
+		} else if (elem.msRequestFullscreen) {
+			elem.msRequestFullscreen();         /* IE/Edge */
+		}
+	}
 	/* --------------------------------------------------------------------------- */
 	/**
 	 * Выбор шаблона для печати
@@ -366,9 +368,9 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		}
 		const date2: Date = new Date(this.expirationDate.value);
 		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
-
+		const barCode = this.currentproduct.inner_ean13 ? this.currentproduct.inner_ean13 : this.currentproduct.bar_code;
 		const code128: string = this.currentproduct.code128_prefix
-			+ ((this.currentproduct.bar_code + '').substr(7, 5))
+			+ ((barCode + '').substr(7, 5))
 			+ '-----'
 			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
 			+ '1';
@@ -417,8 +419,9 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		const date2: Date = new Date(this.expirationDate.value);
 		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
 		console.log(this.weighingService.totals.netto);
+		const barCode = this.currentproduct.inner_ean13 ? this.currentproduct.inner_ean13 : this.currentproduct.bar_code;
 		const code128: string = this.currentproduct.code128_prefix
-			+ ((this.currentproduct.bar_code + '').substr(7, 5))
+			+ ((barCode + '').substr(7, 5))
 			+ (this.weighingService.totals.netto + '').replace('.','').padStart(5, '0')
 			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
 			+ '1';
@@ -456,9 +459,9 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	test_print(weight = 0.667) {
 		const date2: Date = new Date(this.expirationDate.value);
 		date2.setDate(date2.getDate() + this.currentproduct.expiration_date);
-
+		const barCode = this.currentproduct.inner_ean13 ? this.currentproduct.inner_ean13 : this.currentproduct.bar_code;
 		const code128: string = this.currentproduct.code128_prefix
-			+ ((this.currentproduct.bar_code + '').substr(7, 5))
+			+ ((barCode + '').substr(7, 5))
 			+ (weight + '').replace('.', '').padStart(5, '0')
 			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
 			+ '1';
