@@ -11,19 +11,20 @@ import {
 	faWeight,
 	faWindowClose
 }                                from '@fortawesome/free-solid-svg-icons';
-import { ProductionService }     from '../services/production.service';
+import { ProductionService }           from '../services/production.service';
 import { UserService }                 from '../services/user.service';
 import { ProductionModel }             from '../production/production.model';
 import { SelectDialogComponent }       from '../dialog/dialog-select.component';
 import { TemplatesService }            from '../services/templates.service';
 import { WeighingService }             from '../services/weighing.service';
 import { WebsocketService }            from '../ws/ws.service';
-import { Observable, Subject }         from 'rxjs';
+import { merge, Observable, Subject }  from 'rxjs';
 import { WS }                          from '../ws.events';
 import { subscribeOn, takeUntil, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent }      from '../dialog/dialog-confirm.component';
 import { LogDialogComponent }          from '../dialog/dialog-log.component';
 import { TareDialogComponent }         from '../dialog/dialog-tare.component';
+import { ParamsService }               from '../services/paramsService';
 
 @Component({
 	selector: 'app-weighing',
@@ -34,6 +35,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	destroy$: Subject<boolean> = new Subject<boolean>();
 	prnTime: any = '';
 	tmpPrnTime: any;
+	precision = 3;
 
 	faIcons = {
 		user: faUser,
@@ -76,6 +78,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		public userService: UserService,
 		public weighingService: WeighingService,
 		public dialog: MatDialog,
+		public paramsservice: ParamsService,
 		private wsService: WebsocketService
 	) {
 	}
@@ -87,33 +90,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		packs = packs ? packs : '5';
 		this.packsPerBox = parseInt( packs, 10);
 
-		// let tare: string = localStorage.getItem('tare');
-		// tare = tare ? tare : '0.01';
-		// this.weighingService.currentTare = parseFloat( tare );
-
-		this.productService
-			.getProduction()
-			.pipe(
-				takeUntil(this.destroy$),
-			)
-			.subscribe(
-				(resp: any[]) => {
-					this.production = resp;
-				}
-			);
-		this.userService
-			.getUsers()
-			.pipe(
-				takeUntil(this.destroy$),
-			)
-			.subscribe(
-				resp => this.usersList = resp,
-			);
-
-		this.templatesService
-			.getTemplates()
-			.subscribe();
-
+		this.LoadData();
     	// WS messages
 		this.messages$ = this.wsService.on<any>(WS.ON.MESSAGES);
 		this.weight$ = this.wsService.on<any>(WS.ON.WEIGHT);
@@ -160,7 +137,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		this.weight$.pipe(
 			takeUntil(this.destroy$),
 		).subscribe((weight) => {
-			weight = JSON.parse(weight) * 1;
+			weight = (JSON.parse(weight) * 1).toFixed(this.precision);
 			console.log('WEBSOKET [weight]:', weight);
 			this.weighingService.currentWeight = weight;
 			if (weight === 0) {
@@ -208,6 +185,8 @@ export class WeighingComponent implements OnInit, OnDestroy {
 					this.getTareMode = false;
 					if (status) {
 						this.serverConnected = true;
+						this.LoadData();
+						this.wsService.send('set-tare', this.weighingService.currentTare);
 						this.getScalesStatus();
 						if (this.currentproduct) {
 							this.prepareDataForPrint();
@@ -220,11 +199,45 @@ export class WeighingComponent implements OnInit, OnDestroy {
 				},
 			);
 	}
+	/* --------------------------------------------------------------------------- */
+	LoadData() {
+		this.paramsservice
+			.getParams(true)
+			.subscribe(
+				params => {
+					this.precision = params.precision;
+				}
+			);
+		// let tare: string = localStorage.getItem('tare');
+		// tare = tare ? tare : '0.01';
+		// this.weighingService.currentTare = parseFloat( tare );
 
+		this.productService
+			.getProduction(true)
+			.subscribe(
+				(resp: any[]) => {
+					this.production = resp;
+				}
+			);
+
+		this.userService
+			.getUsers(true)
+			.subscribe(
+				resp => this.usersList = resp,
+			);
+
+		this.templatesService
+			.getTemplates(true)
+			.subscribe();
+	}
+	/* --------------------------------------------------------------------------- */
 	public getScalesStatus(): void {
 		this.wsService.send(WS.SEND.GET_STATUS, 'any');
 	}
-
+	/* --------------------------------------------------------------------------- */
+	reloadPage() {
+		location.reload();
+	}
 	/* --------------------------------------------------------------------------- */
 	tareModeToggle() {
 		// this.getTareMode = !this.getTareMode;
@@ -236,11 +249,17 @@ export class WeighingComponent implements OnInit, OnDestroy {
 			.subscribe(
 				result => {
 					if (result) {
-						this.weighingService.currentTare = result;
+						this.wsService.send('set-tare', result * 1);
+						this.weighingService.currentTare = result * 1;
 						localStorage.setItem('tare', this.weighingService.currentTare + '');
 					}
 				},
 			);
+	}
+	/* --------------------------------------------------------------------------- */
+	resetTare() {
+		this.weighingService.currentTare = 0;
+		this.wsService.send('set-tare', 0);
 	}
 	/* --------------------------------------------------------------------------- */
 	changeDate(fcDate: FormControl, operation: number) {
@@ -352,12 +371,13 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		dialogRef.afterClosed()
 			.subscribe(
 				result => {
-					this.templatesService.currentTemplate = result;
-					localStorage.setItem('template', JSON.stringify(result));
-					this.prepareDataForPrint();
+					if (result) {
+						this.templatesService.currentTemplate = result;
+						localStorage.setItem('template', JSON.stringify(result));
+						this.prepareDataForPrint();
+					}
 				});
 	}
-
 	/* --------------------------------------------------------------------------- */
 	/**
 	 * Отправить данные из которых будет формироваться этикетка:
@@ -412,6 +432,15 @@ export class WeighingComponent implements OnInit, OnDestroy {
 			}
 		);
 	}
+
+	/* --------------------------------------------------------------------------- */
+	formatWeight(weight) {
+		// const ww = (weight + '').split('.');
+		// const str = ww[0].padStart(2, '0') + ww[1].padEnd(3, '0');
+		const str = (Math.round(weight * 1000) + '').padStart(5, '0');
+		console.log('----------------->', str);
+		return str;
+	}
 	/* --------------------------------------------------------------------------- */
 	printTotal(autoconfirm = false) {
 		if (autoconfirm) {
@@ -423,7 +452,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		const barCode = this.currentproduct.inner_ean13 ? this.currentproduct.inner_ean13 : this.currentproduct.bar_code;
 		const code128: string = this.currentproduct.code128_prefix
 			+ ((barCode + '').substr(7, 5))
-			+ (this.weighingService.totals.netto + '').replace('.','').padStart(5, '0')
+			+ this.formatWeight(this.weighingService.totals.netto)
 			+ this.format_date(this.expirationDate.value).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
 			+ '1';
 		const data = {
@@ -463,7 +492,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		const barCode = this.currentproduct.inner_ean13 ? this.currentproduct.inner_ean13 : this.currentproduct.bar_code;
 		const code128: string = this.currentproduct.code128_prefix
 			+ ((barCode + '').substr(7, 5))
-			+ (weight + '').replace('.', '').padStart(5, '0')
+			+ this.formatWeight(weight)
 			+ this.format_date(this.expirationDate.value).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
 			+ '1';
 

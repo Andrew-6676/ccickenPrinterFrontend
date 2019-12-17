@@ -1,5 +1,6 @@
+<div style="font-size: 2em; text-align: center; position: fixed; width: 100%">{{ serverName }}</div>
 <div class="wrapper">
-	<a [routerLink]="['/weighing']" class="menu-item" (click)="fullScreen()">Взвешивание</a>
+	<a [routerLink]="['/weighing']" [style.background]="color" class="menu-item" (click)="fullScreen()">Взвешивание</a>
 	<a [routerLink]="['/production/list']" class="menu-item">Справочник продукции</a>
 	<a [routerLink]="['/users']" class="menu-item">Справочник пользователей</a>
 	<a [routerLink]="['/templates']" class="menu-item">Справочник шаблонов</a>

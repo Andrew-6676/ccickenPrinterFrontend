@@ -29,7 +29,10 @@
 			[disabled]="!userService.currentUser">2</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('3')"
 			[disabled]="!userService.currentUser">3</button>
-	<button mat-raised-button class="weiging-btn srv-btn plu-btn" (click)="getProduct()"
+	<button mat-raised-button class="weiging-btn srv-btn refresh-btn" *ngIf="!weighingService.scales.connected"
+			(click)="reloadPage()">Перезагрузить<br>приложение</button>
+	<button mat-raised-button class="weiging-btn srv-btn plu-btn" *ngIf="weighingService.scales.connected"
+			(click)="getProduct()"
 			[disabled]="!userService.currentUser">PLU</button>
 	<button mat-raised-button class="weiging-btn srv-btn tare-btn" [disabled]="!userService.currentUser"
 			[ngClass]="{tare_active: getTareMode}"
@@ -59,7 +62,7 @@
 		</span>
 	</button>
 	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser"
-			(click)="weighingService.currentTare = 0">
+			(click)="resetTare()">
 		<fa-icon [icon]="faIcons.tareReset"></fa-icon>
 		Сброс тары
 	</button>
