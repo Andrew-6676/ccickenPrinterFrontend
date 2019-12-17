@@ -33,6 +33,7 @@
 			[disabled]="!userService.currentUser">PLU</button>
 	<button mat-raised-button class="weiging-btn srv-btn tare-btn" [disabled]="!userService.currentUser"
 			[ngClass]="{tare_active: getTareMode}"
+	        [style.color]="weighingService?.currentTare==0 ? 'green' : 'red'"
 			(click)="tareModeToggle()">
 		<fa-icon [icon]="faIcons.tare"></fa-icon>
 		Тара

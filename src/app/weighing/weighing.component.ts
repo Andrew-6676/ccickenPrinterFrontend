@@ -87,9 +87,9 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		packs = packs ? packs : '5';
 		this.packsPerBox = parseInt( packs, 10);
 
-		let tare: string = localStorage.getItem('tare');
-		tare = tare ? tare : '0.01';
-		this.weighingService.currentTare = parseFloat( tare );
+		// let tare: string = localStorage.getItem('tare');
+		// tare = tare ? tare : '0.01';
+		// this.weighingService.currentTare = parseFloat( tare );
 
 		this.productService
 			.getProduction()
@@ -190,6 +190,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 					+ this.weighingService.totals.tare) * 1000) / 1000;
 			}
 		});
+
 		this.scales$.pipe(
 			takeUntil(this.destroy$),
 		).subscribe((resp: any) => {
@@ -372,7 +373,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		const code128: string = this.currentproduct.code128_prefix
 			+ ((barCode + '').substr(7, 5))
 			+ '-----'
-			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
+			+ this.format_date(this.expirationDate.value).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
 			+ '1';
 
 		this.weighingService.preparePrintData({
@@ -423,7 +424,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		const code128: string = this.currentproduct.code128_prefix
 			+ ((barCode + '').substr(7, 5))
 			+ (this.weighingService.totals.netto + '').replace('.','').padStart(5, '0')
-			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
+			+ this.format_date(this.expirationDate.value).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
 			+ '1';
 		const data = {
 			id: this.currentproductId,
@@ -463,7 +464,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		const code128: string = this.currentproduct.code128_prefix
 			+ ((barCode + '').substr(7, 5))
 			+ (weight + '').replace('.', '').padStart(5, '0')
-			+ this.format_date(date2).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
+			+ this.format_date(this.expirationDate.value).replace(/\./g, '').replace(/\d\d(\d\d)$/, '$1')
 			+ '1';
 
 		this.weighingService
