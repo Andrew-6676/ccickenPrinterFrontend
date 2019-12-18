@@ -120,6 +120,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 					this.prnTime = '';
 					this.tmpPrnTime = new Date().getTime();
 					// напечатать итог
+					console.log('------->', this.packsPerBox, this.weighingService.totals.packs);
 					if (this.packsPerBox === this.weighingService.totals.packs) {
 						setTimeout(() => {
 							console.log('start total: ', new Date());
@@ -137,7 +138,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		this.weight$.pipe(
 			takeUntil(this.destroy$),
 		).subscribe((weight) => {
-			weight = (JSON.parse(weight) * 1).toFixed(this.precision);
+			weight = JSON.parse(weight) * 1;
 			console.log('WEBSOKET [weight]:', weight);
 			this.weighingService.currentWeight = weight;
 			if (weight === 0) {
