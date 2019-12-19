@@ -33,8 +33,8 @@ export class WebsocketService implements IWebsocketService, OnDestroy {
 	constructor(@Inject(config) private wsConfig: WebSocketConfig) {
 		this.wsMessages$ = new Subject<IWsMessage<any>>();
 
-		this.reconnectInterval = wsConfig.reconnectInterval || 5000; // pause between connections
-		this.reconnectAttempts = wsConfig.reconnectAttempts || 100; // number of connection attempts
+		this.reconnectInterval = wsConfig.reconnectInterval || 10000; // pause between connections
+		this.reconnectAttempts = wsConfig.reconnectAttempts || 1000; // number of connection attempts
 
 		this.config = {
 			url: wsConfig.url,

@@ -34,6 +34,8 @@ import { LogDialogComponent }     from './dialog/dialog-log.component';
 import { StartMenuComponent }     from './start-menu/start-menu.component';
 import { PasswdDialogComponent }  from './dialog/dialog-passwd.component';
 import { TareDialogComponent }    from './dialog/dialog-tare.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
 	declarations: [
@@ -81,6 +83,7 @@ import { TareDialogComponent }    from './dialog/dialog-tare.component';
 		MatCheckboxModule,
 		MatRadioModule,
 		MatIconModule,
+		ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
 	],
 	providers: [
 		ProductionService,

@@ -24,17 +24,17 @@
 
 <div class="keyboard">
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('1')"
-			[disabled]="!userService.currentUser">1</button>
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">1</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('2')"
-			[disabled]="!userService.currentUser">2</button>
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">2</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('3')"
-			[disabled]="!userService.currentUser">3</button>
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">3</button>
 	<button mat-raised-button class="weiging-btn srv-btn refresh-btn" *ngIf="!weighingService.scales.connected"
 			(click)="reloadPage()">Перезагрузить<br>приложение</button>
 	<button mat-raised-button class="weiging-btn srv-btn plu-btn" *ngIf="weighingService.scales.connected"
 			(click)="getProduct()"
 			[disabled]="!userService.currentUser">PLU</button>
-	<button mat-raised-button class="weiging-btn srv-btn tare-btn" [disabled]="!userService.currentUser"
+	<button mat-raised-button class="weiging-btn srv-btn tare-btn" [disabled]="!userService.currentUser  || !weighingService.scales.connected"
 			[ngClass]="{tare_active: getTareMode}"
 	        [style.color]="weighingService?.currentTare==0 ? 'green' : 'red'"
 			(click)="tareModeToggle()">
@@ -45,12 +45,13 @@
 	</button>
 
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('4')"
-			[disabled]="!userService.currentUser">4</button>
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">4</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('5')"
-			[disabled]="!userService.currentUser">5</button>
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">5</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('6')"
-			[disabled]="!userService.currentUser">6</button>
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">6</button>
 	<button mat-raised-button class="weiging-btn srv-btn" (click)="getUser()"
+			[disabled]="!weighingService.scales.connected"
 			color="{{ userService.currentUser ? '' : 'warn' }}">
 		<span *ngIf="!userService.currentUser">
 			<fa-icon [icon]="faIcons.user"></fa-icon>
@@ -61,19 +62,19 @@
 			{{ userService.currentUser?.name }}
 		</span>
 	</button>
-	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser"
+	<button mat-raised-button class="weiging-btn srv-btn" [disabled]="!userService.currentUser  || !weighingService.scales.connected"
 			(click)="resetTare()">
 		<fa-icon [icon]="faIcons.tareReset"></fa-icon>
 		Сброс тары
 	</button>
 
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('7')"
-			[disabled]="!userService.currentUser">7</button>
+			[disabled]="!userService.currentUser  || !weighingService.scales.connected">7</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('8')"
-			[disabled]="!userService.currentUser">8</button>
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">8</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('9')"
-			[disabled]="!userService.currentUser">9</button>
-	<button mat-raised-button class="weiging-btn srv-btn scales-btn" [disabled]="!userService.currentUser">
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">9</button>
+	<button mat-raised-button class="weiging-btn srv-btn scales-btn" [disabled]="!userService.currentUser || !weighingService.scales.connected">
 		<fa-icon [icon]="faIcons.weight"></fa-icon>
 		На весах:
 		<br>
@@ -83,32 +84,32 @@
 		<button class="weiging-btn srv-bt"
 				mat-raised-button
 				(click)="selectTemplate()"
-				[disabled]="!userService.currentUser">
+				[disabled]="!userService.currentUser || !weighingService.scales.connected">
 			<fa-icon [icon]="faIcons.excel"></fa-icon>
 			Шаблон: {{templatesService.currentTemplate?.id}}
 		</button>
 		<button mat-raised-button
 				class="weiging-btn srv-bt"
 				(click)="test_print()"
-				[disabled]="currentproductId<0">
+				[disabled]="currentproductId<0 || !weighingService.scales.connected">
 			<fa-icon [icon]="faIcons.print"></fa-icon>
 			Тест
 		</button>
 	</div>
 	<button mat-raised-button class="weiging-btn red-btn" (click)="NumPress('reset')"
-			[disabled]="!userService.currentUser">
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">
 		<fa-icon [icon]="faIcons.reset"></fa-icon>
 		Сброс
 	</button>
 	<button mat-raised-button class="weiging-btn num-btn" (click)="NumPress('0')"
-			[disabled]="!userService.currentUser">0</button>
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">0</button>
 	<button mat-raised-button class="weiging-btn orange-btn" (click)="NumPress('del')"
-			[disabled]="!userService.currentUser">
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">
 		<fa-icon [icon]="faIcons.delete"></fa-icon>
 		Удалить
 	</button>
 	<button mat-raised-button class="weiging-btn srv-btn" (click)="printTotal()"
-			[disabled]="!userService.currentUser">
+			[disabled]="!userService.currentUser || !weighingService.scales.connected">
 		<fa-icon [icon]="faIcons.total"></fa-icon>
 		Итог
 	</button>
@@ -131,7 +132,7 @@
 			</mat-select>
 	</mat-form-field>
 
-	<fieldset [disabled]="!currentproduct">
+	<fieldset [disabled]="!currentproduct || !weighingService.scales.connected">
 		<div class="inputs">
 			<div class="left">
 				<button mat-fab color="primary" (click)="changeDate(partyDate, -1)">-</button>
