@@ -40,7 +40,7 @@ export class UserService {
 	}
 
 	saveUser(user: any) {
-		if (user.id > 0) {
+		if (user.id >= 0) {
 			return this.http.put('/api/users/' + user.id, user);
 		} else {
 			return this.http.post('/api/users', user);

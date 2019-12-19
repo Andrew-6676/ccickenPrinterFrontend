@@ -71,6 +71,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	private weight$: Observable<any>;
 	private scales$: Observable<any>;
 	private print$: Observable<any>;
+	private spr$: Observable<any>;
 
 	constructor(
 		public productService: ProductionService,
@@ -96,6 +97,38 @@ export class WeighingComponent implements OnInit, OnDestroy {
 		this.weight$ = this.wsService.on<any>(WS.ON.WEIGHT);
 		this.scales$ = this.wsService.on<any>(WS.ON.SCALES);
 		this.print$ = this.wsService.on<any>(WS.ON.PRINT);
+		this.spr$ = this.wsService.on<any>(WS.ON.SPR);
+
+		this.spr$.pipe(
+			takeUntil(this.destroy$),
+		).subscribe(
+			spr => {
+				console.log('WEBSOKET [spr]:', spr);
+				switch (spr) {
+					case '"user"':
+						this.userService
+							.getUsers(true)
+							.subscribe(
+								resp => this.usersList = resp,
+							);
+						break;
+					case '"product"':
+						this.productService
+							.getProduction(true)
+							.subscribe(
+								(resp: any[]) => {
+									this.production = resp;
+								}
+							);
+						break;
+					case '"template"':
+						this.templatesService
+							.getTemplates(true)
+							.subscribe();
+						break;
+				}
+			}
+		);
 
 		this.messages$.pipe(
 				takeUntil(this.destroy$),
@@ -438,7 +471,7 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	formatWeight(weight) {
 		// const ww = (weight + '').split('.');
 		// const str = ww[0].padStart(2, '0') + ww[1].padEnd(3, '0');
-		const str = (Math.round(weight * 1000) + '').padStart(5, '0');
+		const str = (Math.round(weight * 10 ** this.precision) + '').padStart(5, '0');
 		console.log('----------------->', str);
 		return str;
 	}

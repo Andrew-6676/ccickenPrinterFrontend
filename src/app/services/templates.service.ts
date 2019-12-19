@@ -47,11 +47,11 @@ export class TemplatesService {
 		return of(false);
 	}
 
-	save(template: ProductionModel) {
+	save(template: any) {
 		if (template.id < 0) {
 			return this.http.post('/api/print/templates', template);
 		} else {
-			return this.http.put('/api/print/templates' + template.id, template);
+			return this.http.put('/api/print/templates/' + template.id, template);
 		}
 	}
 

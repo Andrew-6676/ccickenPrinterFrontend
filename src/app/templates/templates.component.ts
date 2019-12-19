@@ -94,12 +94,16 @@ export class TemplatesComponent implements OnInit {
 
 	save() {
 		this.templatesService
-			.uploadTemplate()
+			.save(this.form)
 			.subscribe(
-				resp => {
-					console.log('save resp:', resp);
-					this.refresh(true);
-					this.showForm = false;
+				(resp: any) => {
+					if (resp.status === 'ok') {
+						console.log('save resp:', resp);
+						this.refresh(true);
+						this.showForm = false;
+					} else {
+						alert('Ошибка: ' + resp.message);
+					}
 				},
 			);
 	}
