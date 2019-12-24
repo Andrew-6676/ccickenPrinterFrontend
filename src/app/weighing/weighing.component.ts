@@ -471,7 +471,8 @@ export class WeighingComponent implements OnInit, OnDestroy {
 	formatWeight(weight) {
 		// const ww = (weight + '').split('.');
 		// const str = ww[0].padStart(2, '0') + ww[1].padEnd(3, '0');
-		const str = (Math.round(weight * 10 ** this.precision) + '').padStart(5, '0');
+		// const str = (Math.round(weight * 10 ** this.precision) + '').padStart(5, '0');
+		const str = (Math.round(weight * 1000) + '').padStart(5, '0');
 		console.log('----------------->', str);
 		return str;
 	}
